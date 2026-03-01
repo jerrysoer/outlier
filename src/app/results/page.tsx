@@ -311,6 +311,14 @@ function ResultsDisplay({ result, onTryAnother }: { result: AnalysisResult; onTr
       <div className="section-divider" />
 
       {/* ═══ Thumbnail Analysis ═══ */}
+      <div className="animate-fade-in" style={{ opacity: 0 }}>
+        <h3 className="text-lg font-semibold tracking-tight text-[var(--text-primary)]">
+          Thumbnail DNA
+        </h3>
+        <p className="text-xs text-[var(--text-secondary)] mt-1">
+          How your visual signals compare across 50 videos per channel
+        </p>
+      </div>
       <GapTable
         signals={result.signals}
         channelAName={channelAName}
