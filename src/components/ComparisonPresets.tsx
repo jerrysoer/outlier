@@ -6,11 +6,11 @@ import type { PresetData } from "@/lib/types";
 
 const PRESETS: PresetData[] = [
   {
-    channelA: "@MrBeast",
-    channelB: "@midtiergaming",
-    channelAName: "MrBeast",
-    channelBName: "Mid-tier Gaming",
-    teaser: "The gap that built a $500M empire",
+    channelA: "@gregisenberg",
+    channelB: "@ColeMedin",
+    channelAName: "Greg Isenberg",
+    channelBName: "Cole Medin",
+    teaser: "Startup ideas vs hands-on AI agents",
   },
   {
     channelA: "@aliabdaal",
@@ -34,11 +34,11 @@ const PRESETS: PresetData[] = [
     teaser: "Finance YouTube's closest rivalry",
   },
   {
-    channelA: "@JeffNippard",
-    channelB: "@midtierfitness",
-    channelAName: "Jeff Nippard",
-    channelBName: "Mid-tier Fitness",
-    teaser: "Science vs bro — the thumbnail truth",
+    channelA: "@Jesser",
+    channelB: "@GoodGood",
+    channelAName: "Jesser",
+    channelBName: "Good Good",
+    teaser: "Court vs course — sports content clash",
   },
 ];
 
