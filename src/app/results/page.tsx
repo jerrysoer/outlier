@@ -297,7 +297,7 @@ function ResultsDisplay({ result, onTryAnother }: { result: AnalysisResult; onTr
       <div className="section-divider" />
 
       {/* ═══ Strategic Insights ═══ */}
-      <CoreFinding finding={result.coreFinding} />
+      <CoreFinding finding={result.coreFinding} structured={result.coreFindingStructured} />
       <StealThis
         tactics={result.viral.stealThisStrategy}
         channelBName={channelBName}

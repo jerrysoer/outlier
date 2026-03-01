@@ -5,11 +5,12 @@ import type { CoreFindingStructured } from "@/lib/types";
 import { getCoreFinding } from "@/lib/types";
 
 interface CoreFindingProps {
-  finding: string | CoreFindingStructured;
+  finding: string;
+  structured?: CoreFindingStructured;
 }
 
-export default function CoreFinding({ finding }: CoreFindingProps) {
-  const { headline, metrics } = getCoreFinding(finding);
+export default function CoreFinding({ finding, structured }: CoreFindingProps) {
+  const { headline, metrics } = structured ?? getCoreFinding(finding);
 
   return (
     <div

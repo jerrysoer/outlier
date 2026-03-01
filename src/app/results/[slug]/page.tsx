@@ -39,9 +39,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const roastText = typeof rawRoast === "string"
     ? rawRoast
     : (rawRoast?.forA || rawRoast?.forB || "");
+  // coreFinding is string in new audits; guard against legacy objects from Supabase
   const coreFindingText = typeof result.coreFinding === "string"
     ? result.coreFinding
-    : result.coreFinding?.headline ?? "";
+    : (result.coreFinding as unknown as { headline?: string })?.headline ?? "";
   const description = roastText || coreFindingText.slice(0, 150) || "YouTube channel competitive analysis by Outlier";
 
   return {

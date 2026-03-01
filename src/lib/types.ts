@@ -269,7 +269,8 @@ export interface AnalysisResult {
   channelA: ChannelData;
   channelB: ChannelData;
   signals: ThumbnailSignal[];
-  coreFinding: string | CoreFindingStructured;
+  coreFinding: string;
+  coreFindingStructured?: CoreFindingStructured;
   outlierVideos: {
     channelA: OutlierVideo[];
     channelB: OutlierVideo[];

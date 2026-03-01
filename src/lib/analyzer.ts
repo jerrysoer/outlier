@@ -709,7 +709,8 @@ TAGS:
     channelA,
     channelB,
     signals,
-    coreFinding: {
+    coreFinding: textResult.core_finding?.headline ?? "",
+    coreFindingStructured: {
       headline: textResult.core_finding?.headline ?? "",
       metrics: textResult.core_finding?.metrics ?? [],
     },
