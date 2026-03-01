@@ -39,7 +39,10 @@ export async function generateMetadata({ params }: PageProps): Promise<Metadata>
   const roastText = typeof rawRoast === "string"
     ? rawRoast
     : (rawRoast?.forA || rawRoast?.forB || "");
-  const description = roastText || result.coreFinding?.slice(0, 150) || "YouTube channel competitive analysis by Outlier";
+  const coreFindingText = typeof result.coreFinding === "string"
+    ? result.coreFinding
+    : result.coreFinding?.headline ?? "";
+  const description = roastText || coreFindingText.slice(0, 150) || "YouTube channel competitive analysis by Outlier";
 
   return {
     title,

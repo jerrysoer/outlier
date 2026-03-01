@@ -266,7 +266,10 @@ async function setCachedSignals(
 // ══════════════════════════════════════════
 
 interface TextCallResult {
-  core_finding: string;
+  core_finding: {
+    headline: string;
+    metrics: Array<{ label: string; value: string; context: string }>;
+  };
   outlier_videos_a: Array<{ video_id: string; why_it_worked: string }>;
   outlier_videos_b: Array<{ video_id: string; why_it_worked: string }>;
   title_intelligence: {
@@ -368,7 +371,13 @@ ${computedContext}
 Return this JSON structure:
 
 {
-  "core_finding": "1-2 sentence strategic diagnosis. Lead with the #1 thing Channel A should change. Reference one key metric. No preamble.",
+  "core_finding": {
+    "headline": "Max 12 words. The #1 thing Channel A must change. No filler.",
+    "metrics": [
+      { "label": "2-3 word metric name", "value": "Number or ratio", "context": "Max 8 words comparing channels" }
+    ]
+  },
+  "NOTE_core_finding": "Return exactly 3 items in core_finding.metrics.",
 
   "outlier_videos_a": [
     { "video_id": "xxx", "why_it_worked": "1-2 sentence explanation referencing specific thumbnail/title/timing factors" }
@@ -407,7 +416,7 @@ Return this JSON structure:
   "roast_card_b": "A playful, witty jab aimed ONLY at ${channelB.meta.title}, written in first person from ${channelA.meta.title}'s perspective. Same lighthearted tone — data-backed but harmless. Address them as 'you'. Must NOT mention ${channelA.meta.title} by name. Max 2 sentences.",
 
   "steal_this_strategy": [
-    { "action": "One imperative sentence, max 15 words. Start with a verb.", "proof": "One stat or comparison, max 12 words." }
+    { "action": "Imperative verb phrase, max 8 words.", "proof": "One stat, max 8 words." }
   ],
 
   "tweetable_callout": "A pre-written tweet under 240 chars comparing these channels. Use @${channelB.meta.handle} mention. Include a specific stat. Make it shareable and provocative."
@@ -700,7 +709,10 @@ TAGS:
     channelA,
     channelB,
     signals,
-    coreFinding: textResult.core_finding,
+    coreFinding: {
+      headline: textResult.core_finding?.headline ?? "",
+      metrics: textResult.core_finding?.metrics ?? [],
+    },
     outlierVideos: {
       channelA: outlierVideosA,
       channelB: outlierVideosB,

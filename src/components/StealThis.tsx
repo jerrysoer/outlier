@@ -20,18 +20,16 @@ export default function StealThis({ tactics, channelBName }: Props) {
       <div className="space-y-3">
         {tactics.map((tactic, i) => (
           <div key={i} className="card p-4 card-accent">
-            <div className="flex gap-3">
+            <div className="flex items-center gap-3">
               <div className="flex-shrink-0 w-8 h-8 rounded-lg bg-[var(--accent-dim)] flex items-center justify-center">
                 <Crosshair size={16} className="text-[var(--accent)]" />
               </div>
-              <div>
-                <p className="text-sm font-medium text-[var(--text-primary)] mb-1">
-                  {tactic.action}
-                </p>
-                <p className="text-xs text-[var(--text-secondary)]">
-                  {tactic.proof}
-                </p>
-              </div>
+              <p className="text-sm font-medium text-[var(--text-primary)]">
+                {tactic.action}
+              </p>
+              <span className="ml-auto flex-shrink-0 max-w-[200px] truncate rounded-full bg-[var(--accent-dim)] px-3 py-1 text-xs font-mono text-[var(--accent)]">
+                {tactic.proof}
+              </span>
             </div>
           </div>
         ))}

@@ -233,6 +233,26 @@ export function getRoastCards(roastCard: string | RoastCards): RoastCards {
   return roastCard;
 }
 
+// ── Structured Core Finding ──
+
+export interface CoreFindingMetric {
+  label: string;   // 2-3 words, e.g. "Engagement Gap"
+  value: string;   // number/ratio, e.g. "3.2x"
+  context: string; // max 8 words, e.g. "Ali wins but buries it in volume"
+}
+
+export interface CoreFindingStructured {
+  headline: string;
+  metrics: CoreFindingMetric[];
+}
+
+export function getCoreFinding(cf: string | CoreFindingStructured): CoreFindingStructured {
+  if (typeof cf === "string") {
+    return { headline: cf.split(". ")[0] || cf, metrics: [] };
+  }
+  return cf;
+}
+
 // ── Comparison Presets ──
 
 export interface PresetData {
@@ -249,7 +269,7 @@ export interface AnalysisResult {
   channelA: ChannelData;
   channelB: ChannelData;
   signals: ThumbnailSignal[];
-  coreFinding: string;
+  coreFinding: string | CoreFindingStructured;
   outlierVideos: {
     channelA: OutlierVideo[];
     channelB: OutlierVideo[];

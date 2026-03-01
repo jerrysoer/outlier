@@ -5,7 +5,7 @@ import GapTable from "@/components/GapTable";
 import CoreFinding from "@/components/CoreFinding";
 import OutlierCallout from "@/components/OutlierCallout";
 import GradesBadge from "@/components/GradesBadge";
-import RoastCard from "@/components/RoastCard";
+import HeadToHeadCard from "@/components/HeadToHeadCard";
 import StealThis from "@/components/StealThis";
 import ThumbnailCorrelation from "@/components/ThumbnailCorrelation";
 import EngagementRate from "@/components/EngagementRate";
@@ -85,7 +85,7 @@ export default function SharedResultView({ result }: Props) {
 
         {/* Grade + Roast */}
         <GradesBadge grades={result.viral.grades} channelAName={channelAName} channelBName={channelBName} />
-        <RoastCard roastCard={result.viral.roastCard} channelAName={channelAName} channelBName={channelBName} slug={result.slug} />
+        <HeadToHeadCard result={result} />
 
         <div className="section-divider" />
 

@@ -7,7 +7,7 @@ import GapTable from "@/components/GapTable";
 import CoreFinding from "@/components/CoreFinding";
 import OutlierCallout from "@/components/OutlierCallout";
 import GradesBadge from "@/components/GradesBadge";
-import RoastCard from "@/components/RoastCard";
+import HeadToHeadCard from "@/components/HeadToHeadCard";
 import StealThis from "@/components/StealThis";
 import ThumbnailCorrelation from "@/components/ThumbnailCorrelation";
 import EngagementRate from "@/components/EngagementRate";
@@ -292,14 +292,7 @@ function ResultsDisplay({ result, onTryAnother }: { result: AnalysisResult; onTr
         channelAName={channelAName}
         channelBName={channelBName}
       />
-      {/* RoastCard hidden for now — re-enable when ready
-      <RoastCard
-        roastCard={result.viral.roastCard}
-        channelAName={channelAName}
-        channelBName={channelBName}
-        slug={result.slug}
-      />
-      */}
+      <HeadToHeadCard result={result} />
 
       <div className="section-divider" />
 
