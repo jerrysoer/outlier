@@ -123,7 +123,7 @@ export default function ThumbnailCorrelation({ correlations }: Props) {
     <div className="animate-fade-in-up" style={{ opacity: 0, animationDelay: "150ms" }}>
       <div className="label-mono mb-3">Thumbnail Performance Correlation</div>
       <p className="text-xs text-[var(--text-secondary)] mb-4">
-        Which visual signals appear more in top-performing videos vs bottom-performing ones?
+        Across both channels: which visual signals appear more in top-performing videos vs bottom-performing ones?
       </p>
 
       {/* 2-column grid — 1-col on mobile */}
