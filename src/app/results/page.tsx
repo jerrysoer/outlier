@@ -292,12 +292,14 @@ function ResultsDisplay({ result, onTryAnother }: { result: AnalysisResult; onTr
         channelAName={channelAName}
         channelBName={channelBName}
       />
+      {/* RoastCard hidden for now — re-enable when ready
       <RoastCard
         roastCard={result.viral.roastCard}
         channelAName={channelAName}
         channelBName={channelBName}
         slug={result.slug}
       />
+      */}
 
       <div className="section-divider" />
 

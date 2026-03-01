@@ -308,6 +308,8 @@ interface TextCallResult {
 
 const TEXT_SYSTEM_PROMPT = `You are an elite YouTube channel strategist and analyst. You deliver data-backed competitive analysis with a distinctive voice — part consultant, part friendly rival — witty but never cruel.
 
+Be terse. Every word must earn its place. Prefer fragments over full sentences. Lead with numbers.
+
 You must respond with ONLY valid JSON, no markdown fences, no explanation.`;
 
 function buildTextPrompt(
@@ -366,7 +368,7 @@ ${computedContext}
 Return this JSON structure:
 
 {
-  "core_finding": "3-5 sentence opinionated strategic diagnosis of the biggest gap between these channels. Be specific — reference actual signal percentages, engagement rates, and title patterns. Write as if advising Channel A on what to change. Be provocative but data-backed.",
+  "core_finding": "1-2 sentence strategic diagnosis. Lead with the #1 thing Channel A should change. Reference one key metric. No preamble.",
 
   "outlier_videos_a": [
     { "video_id": "xxx", "why_it_worked": "1-2 sentence explanation referencing specific thumbnail/title/timing factors" }
@@ -396,8 +398,8 @@ Return this JSON structure:
   },
 
   "grades": {
-    "channel_a": { "letter": "B", "rationale": "One sentence explaining the grade" },
-    "channel_b": { "letter": "A", "rationale": "One sentence explaining the grade" }
+    "channel_a": { "letter": "B", "rationale": "Max 8 words. Fragment OK. e.g. 'Strong engagement, weak upload cadence'" },
+    "channel_b": { "letter": "A", "rationale": "Max 8 words. Fragment OK." }
   },
 
   "roast_card_a": "A playful, witty jab aimed ONLY at ${channelA.meta.title}, written in first person from ${channelB.meta.title}'s perspective. Think friendly rivalry, not mean-spirited. Address them as 'you'. Reference their specific metrics but keep it fun — something both creators would laugh at and want to share. Must NOT mention ${channelB.meta.title} by name. Max 2 sentences.",
@@ -405,7 +407,7 @@ Return this JSON structure:
   "roast_card_b": "A playful, witty jab aimed ONLY at ${channelB.meta.title}, written in first person from ${channelA.meta.title}'s perspective. Same lighthearted tone — data-backed but harmless. Address them as 'you'. Must NOT mention ${channelA.meta.title} by name. Max 2 sentences.",
 
   "steal_this_strategy": [
-    { "action": "Specific actionable tactic Channel A should steal from Channel B", "proof": "The data that proves it works" }
+    { "action": "One imperative sentence, max 15 words. Start with a verb.", "proof": "One stat or comparison, max 12 words." }
   ],
 
   "tweetable_callout": "A pre-written tweet under 240 chars comparing these channels. Use @${channelB.meta.handle} mention. Include a specific stat. Make it shareable and provocative."
