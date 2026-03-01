@@ -88,8 +88,10 @@ export async function resolveChannel(input: string): Promise<ChannelMeta> {
       snippet.thumbnails?.medium?.url ||
       snippet.thumbnails?.default?.url ||
       "",
-    // Deterministic uploads playlist: UC → UU prefix swap (saves 2 API calls)
-    uploadsPlaylistId: "UU" + channel.id.slice(2),
+    // Prefer the real uploads playlist ID from the API; fall back to UC→UU swap
+    uploadsPlaylistId:
+      channel.contentDetails?.relatedPlaylists?.uploads
+      || ("UU" + channel.id.slice(2)),
   };
 }
 
@@ -118,6 +120,11 @@ export async function getChannelVideos(
     const res = await fetch(url);
     if (!res.ok) {
       const text = await res.text();
+      if (res.status === 404 || text.includes("playlistNotFound")) {
+        throw new Error(
+          `Could not load videos for "${channelMeta.title}". This channel may have hidden their uploads.`
+        );
+      }
       throw new Error(`YouTube playlistItems error (${res.status}): ${text}`);
     }
 

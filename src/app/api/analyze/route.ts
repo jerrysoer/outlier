@@ -349,7 +349,13 @@ export async function POST(request: NextRequest) {
           channelDataA = { meta: metaA, videos: videosA };
           channelDataB = { meta: metaB, videos: videosB };
         } catch (e) {
-          const msg = e instanceof Error ? e.message : "Failed to fetch channel data";
+          const raw = e instanceof Error ? e.message : "Failed to fetch channel data";
+          let msg = raw;
+          if (raw.includes("hidden their uploads") || raw.includes("playlistNotFound")) {
+            msg = raw; // Already user-friendly from youtube.ts
+          } else if (raw.includes("Channel not found")) {
+            msg = "We couldn't find that channel. Double-check the URL or handle.";
+          }
           send({ phase: "error", message: msg });
           controller.close();
           return;
