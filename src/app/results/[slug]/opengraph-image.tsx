@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getSupabase } from "@/lib/supabase";
 import type { AnalysisResult } from "@/lib/types";
 
-export const runtime = "edge";
+export const runtime = "nodejs";
 export const alt = "Outlier Analysis";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
@@ -30,16 +30,6 @@ function truncate(s: string, max: number): string {
   return s.length > max ? s.slice(0, max - 1) + "…" : s;
 }
 
-async function safeAvatarUrl(url: string | undefined): Promise<string | null> {
-  if (!url) return null;
-  try {
-    const res = await fetch(url);
-    if (!res.ok) return null;
-    return url;
-  } catch {
-    return null;
-  }
-}
 
 // ── Metric derivation (defensive for legacy audits) ──
 
@@ -124,28 +114,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     // Fall back to system font
   }
 
-  // Default fallback content
-  let result: AnalysisResult | null = null;
-
-  const supabase = getSupabase();
-  if (supabase) {
-    try {
-      const { data } = await supabase
-        .from("audits")
-        .select("result_json")
-        .eq("slug", slug)
-        .single();
-
-      if (data?.result_json) {
-        result = data.result_json as AnalysisResult;
-      }
-    } catch {
-      // Use fallback
-    }
-  }
-
-  // If no result, render generic fallback
-  if (!result) {
+  // Generic fallback — always returns a valid PNG
+  function fallback() {
     return new ImageResponse(
       (
         <div
@@ -172,6 +142,27 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     );
   }
 
+  try {
+  // Fetch result from Supabase
+  let result: AnalysisResult | null = null;
+
+  const supabase = getSupabase();
+  if (supabase) {
+    const { data } = await supabase
+      .from("audits")
+      .select("result_json")
+      .eq("slug", slug)
+      .single();
+
+    if (data?.result_json) {
+      result = data.result_json as AnalysisResult;
+    }
+  }
+
+  if (!result) {
+    return fallback();
+  }
+
   // Extract data
   const channelAName = truncate(result.channelA?.meta?.title || "Channel A", 22);
   const channelBName = truncate(result.channelB?.meta?.title || "Channel B", 22);
@@ -180,12 +171,6 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
   const gradeA = result.viral?.grades?.channelA?.letter;
   const gradeB = result.viral?.grades?.channelB?.letter;
   const metrics = deriveMetrics(result);
-
-  // Fetch avatars in parallel
-  const [avatarA, avatarB] = await Promise.all([
-    safeAvatarUrl(result.channelA?.meta?.thumbnailUrl),
-    safeAvatarUrl(result.channelB?.meta?.thumbnailUrl),
-  ]);
 
   const initialA = (result.channelA?.meta?.title || "A")[0].toUpperCase();
   const initialB = (result.channelB?.meta?.title || "B")[0].toUpperCase();
@@ -232,32 +217,23 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         >
           {/* Channel A */}
           <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
-            {avatarA ? (
-              <img
-                src={avatarA}
-                width={56}
-                height={56}
-                style={{ borderRadius: "50%", marginRight: "16px" }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
-                  background: "#0D9373",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginRight: "16px",
-                  fontSize: "24px",
-                  fontWeight: 700,
-                  color: "#fff",
-                }}
-              >
-                {initialA}
-              </div>
-            )}
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "50%",
+                background: "#0D9373",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginRight: "16px",
+                fontSize: "24px",
+                fontWeight: 700,
+                color: "#fff",
+              }}
+            >
+              {initialA}
+            </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
               <div style={{ fontSize: "22px", fontWeight: 700, color: "#2C2924", fontFamily: "DM Sans" }}>
                 {channelAName}
@@ -303,32 +279,23 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                 </div>
               )}
             </div>
-            {avatarB ? (
-              <img
-                src={avatarB}
-                width={56}
-                height={56}
-                style={{ borderRadius: "50%", marginLeft: "16px" }}
-              />
-            ) : (
-              <div
-                style={{
-                  width: "56px",
-                  height: "56px",
-                  borderRadius: "50%",
-                  background: "#0D9373",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  marginLeft: "16px",
-                  fontSize: "24px",
-                  fontWeight: 700,
-                  color: "#fff",
-                }}
-              >
-                {initialB}
-              </div>
-            )}
+            <div
+              style={{
+                width: "56px",
+                height: "56px",
+                borderRadius: "50%",
+                background: "#0D9373",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                marginLeft: "16px",
+                fontSize: "24px",
+                fontWeight: 700,
+                color: "#fff",
+              }}
+            >
+              {initialB}
+            </div>
           </div>
         </div>
 
@@ -376,11 +343,11 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "14px",
-                    color: "#fff",
                   }}
                 >
-                  {row.winnerA ? "✓" : ""}
+                  {row.winnerA ? (
+                    <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#fff" }} />
+                  ) : null}
                 </div>
               </div>
 
@@ -417,11 +384,11 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontSize: "14px",
-                    color: "#fff",
                   }}
                 >
-                  {row.winnerB ? "✓" : ""}
+                  {row.winnerB ? (
+                    <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#fff" }} />
+                  ) : null}
                 </div>
                 <div
                   style={{
@@ -531,4 +498,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     ),
     { ...size, fonts }
   );
+
+  } catch {
+    return fallback();
+  }
 }
