@@ -18,8 +18,13 @@ import TweetableCallout from "@/components/TweetableCallout";
 import ShareButton from "@/components/ShareButton";
 import ChannelAvatar from "@/components/ChannelAvatar";
 import OutlierWatermark from "@/components/OutlierWatermark";
-import { ArrowLeftRight } from "lucide-react";
+import { ArrowLeftRight, ExternalLink } from "lucide-react";
 import type { AnalysisResult } from "@/lib/types";
+
+function youtubeUrl(handle: string, title: string) {
+  if (handle) return `https://youtube.com/${handle.startsWith("@") ? handle : `@${handle}`}`;
+  return `https://www.youtube.com/results?search_query=${encodeURIComponent(title)}`;
+}
 
 interface Props {
   result: AnalysisResult;
@@ -53,7 +58,15 @@ export default function SharedResultView({ result }: Props) {
         <div className="flex items-center gap-3 flex-wrap animate-fade-in" style={{ opacity: 0 }}>
           <div className="flex items-center gap-2">
             <ChannelAvatar src={result.channelA.meta.thumbnailUrl} name={channelAName} />
-            <span className="text-sm font-medium">{channelAName}</span>
+            <a
+              href={youtubeUrl(result.channelA.meta.handle, channelAName)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-1 text-sm font-medium hover:text-[var(--accent)] transition-colors"
+            >
+              {channelAName}
+              <ExternalLink size={11} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+            </a>
             <span className="data-readout text-xs">
               {result.channelA.meta.subscriberCount.toLocaleString()} subs
             </span>
@@ -71,7 +84,15 @@ export default function SharedResultView({ result }: Props) {
           </button>
           <div className="flex items-center gap-2">
             <ChannelAvatar src={result.channelB.meta.thumbnailUrl} name={channelBName} />
-            <span className="text-sm font-medium">{channelBName}</span>
+            <a
+              href={youtubeUrl(result.channelB.meta.handle, channelBName)}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="group flex items-center gap-1 text-sm font-medium hover:text-[var(--accent)] transition-colors"
+            >
+              {channelBName}
+              <ExternalLink size={11} className="opacity-0 group-hover:opacity-60 transition-opacity" />
+            </a>
             <span className="data-readout text-xs">
               {result.channelB.meta.subscriberCount.toLocaleString()} subs
             </span>
