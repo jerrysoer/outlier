@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { Mail, Check, AlertCircle } from "lucide-react";
 
-const TOTAL_SPOTS = 500;
+const TOTAL_SPOTS = 50;
 
 export default function WaitlistForm() {
   const [email, setEmail] = useState("");
@@ -59,6 +59,7 @@ export default function WaitlistForm() {
 
   const spotsRemaining = Math.max(0, TOTAL_SPOTS - spotsTaken);
   const progressPct = Math.min(100, (spotsTaken / TOTAL_SPOTS) * 100);
+  const isFull = spotsTaken >= TOTAL_SPOTS;
 
   return (
     <div className="max-w-md mx-auto">
@@ -74,6 +75,12 @@ export default function WaitlistForm() {
         </div>
       ) : (
         <form onSubmit={handleSubmit} className="space-y-4">
+          {isFull && (
+            <p className="text-sm text-center text-[var(--text-secondary)]">
+              Join the waitlist to unlock more features when we launch.
+            </p>
+          )}
+
           <div className="flex gap-2">
             <div className="relative flex-1">
               <Mail
@@ -109,11 +116,13 @@ export default function WaitlistForm() {
           <div className="pt-2">
             <div className="flex items-center justify-between mb-2">
               <span className="text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
-                Founding member spots
+                {isFull ? "Founding spots claimed" : "Founding member spots"}
               </span>
-              <span className="data-readout text-xs">
-                {spotsRemaining} of {TOTAL_SPOTS} remaining
-              </span>
+              {!isFull && (
+                <span className="data-readout text-xs">
+                  {spotsRemaining} of {TOTAL_SPOTS} remaining
+                </span>
+              )}
             </div>
             <div className="h-1.5 rounded-full bg-[var(--bg-elevated)] overflow-hidden">
               <div

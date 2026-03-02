@@ -144,7 +144,7 @@ export default function HeadToHeadCard({ result }: Props) {
       <div className="label-mono mb-3">Head to Head</div>
 
       {/* Card — constrained for display, toPng forces 1080×1080 on export */}
-      <div className="max-w-lg mx-auto">
+      <div className="max-w-xl mx-auto">
         <div
           ref={cardRef}
           style={{
@@ -152,102 +152,94 @@ export default function HeadToHeadCard({ result }: Props) {
             background: "linear-gradient(180deg, #FAF9F6 0%, #FFFFFF 100%)",
             border: "1px solid rgba(224, 221, 214, 0.8)",
           }}
-          className="relative rounded-xl overflow-hidden flex flex-col justify-between p-6"
+          className="relative rounded-xl overflow-hidden flex flex-col p-10"
         >
-          {/* Header — channel names */}
+          {/* Zone 1: Header — channel names + divider */}
           <div className="relative z-10 flex items-center justify-between">
             <div className="text-left flex-1 min-w-0">
-              <p className="text-sm font-bold text-[#2C2924] truncate">{channelAName}</p>
-              <p className="text-[10px] text-[#A8A29E] uppercase tracking-wider mt-0.5">
+              <p className="text-xl font-bold text-[#2C2924] truncate">{channelAName}</p>
+              <p className="text-xs text-[#A8A29E] uppercase tracking-wider mt-0.5">
                 {result.channelA.meta.subscriberCount.toLocaleString()} subs
               </p>
             </div>
             <div className="flex-shrink-0 mx-4">
-              <span className="text-xs font-bold tracking-widest text-[#C8C4BC] uppercase">VS</span>
+              <span className="text-sm font-bold tracking-widest text-[#C8C4BC] uppercase">VS</span>
             </div>
             <div className="text-right flex-1 min-w-0">
-              <p className="text-sm font-bold text-[#2C2924] truncate">{channelBName}</p>
-              <p className="text-[10px] text-[#A8A29E] uppercase tracking-wider mt-0.5">
+              <p className="text-xl font-bold text-[#2C2924] truncate">{channelBName}</p>
+              <p className="text-xs text-[#A8A29E] uppercase tracking-wider mt-0.5">
                 {result.channelB.meta.subscriberCount.toLocaleString()} subs
               </p>
             </div>
           </div>
+          <div className="h-0.5 bg-[#E0DDD6] my-6" />
 
-          {/* Divider */}
-          <div className="h-px bg-[#E0DDD6] my-4" />
+          {/* Zone 2: Metrics — flex-1 to fill available space, centered vertically */}
+          <div className="relative z-10 flex-1 flex flex-col justify-center">
+            <div className="flex flex-col gap-6">
+              {metrics.map((row, i) => (
+                <div key={i} className="flex items-center gap-2">
+                  {/* Value A */}
+                  <div className="flex-1 flex items-center justify-end gap-2">
+                    <span
+                      className="text-2xl font-bold font-mono"
+                      style={{ color: row.winnerA ? "#0D9373" : "#A8A29E" }}
+                    >
+                      {row.valueA}
+                    </span>
+                    {row.winnerA && (
+                      <div className="w-7 h-7 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
+                        <Check size={16} color="#fff" strokeWidth={3} />
+                      </div>
+                    )}
+                    {!row.winnerA && <div className="w-7 h-7 flex-shrink-0" />}
+                  </div>
 
-          {/* Metric rows */}
-          <div className="relative z-10 flex flex-col gap-4">
-            {metrics.map((row, i) => (
-              <div key={i} className="flex items-center gap-2">
-                {/* Value A */}
-                <div className="flex-1 flex items-center justify-end gap-2">
-                  <span
-                    className="text-base font-bold font-mono"
-                    style={{ color: row.winnerA ? "#0D9373" : "#A8A29E" }}
-                  >
-                    {row.valueA}
-                  </span>
-                  {row.winnerA && (
-                    <div className="w-5 h-5 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
-                      <Check size={12} color="#fff" strokeWidth={3} />
-                    </div>
-                  )}
-                  {!row.winnerA && <div className="w-5 h-5 flex-shrink-0" />}
+                  {/* Label */}
+                  <div className="w-[160px] text-center flex-shrink-0">
+                    <span className="text-sm text-[#6B6560] uppercase tracking-wide">
+                      {row.label}
+                    </span>
+                  </div>
+
+                  {/* Value B */}
+                  <div className="flex-1 flex items-center gap-2">
+                    {row.winnerB && (
+                      <div className="w-7 h-7 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
+                        <Check size={16} color="#fff" strokeWidth={3} />
+                      </div>
+                    )}
+                    {!row.winnerB && <div className="w-7 h-7 flex-shrink-0" />}
+                    <span
+                      className="text-2xl font-bold font-mono"
+                      style={{ color: row.winnerB ? "#0D9373" : "#A8A29E" }}
+                    >
+                      {row.valueB}
+                    </span>
+                  </div>
                 </div>
-
-                {/* Label */}
-                <div className="w-[120px] text-center flex-shrink-0">
-                  <span className="text-[11px] text-[#6B6560] uppercase tracking-wide">
-                    {row.label}
-                  </span>
-                </div>
-
-                {/* Value B */}
-                <div className="flex-1 flex items-center gap-2">
-                  {row.winnerB && (
-                    <div className="w-5 h-5 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
-                      <Check size={12} color="#fff" strokeWidth={3} />
-                    </div>
-                  )}
-                  {!row.winnerB && <div className="w-5 h-5 flex-shrink-0" />}
-                  <span
-                    className="text-base font-bold font-mono"
-                    style={{ color: row.winnerB ? "#0D9373" : "#A8A29E" }}
-                  >
-                    {row.valueB}
-                  </span>
-                </div>
-              </div>
-            ))}
+              ))}
+            </div>
           </div>
 
-          {/* Divider */}
-          <div className="h-px bg-[#E0DDD6] my-4" />
-
-          {/* Grades + Watermark */}
+          {/* Zone 3: Divider + Grades + Watermark */}
+          <div className="h-0.5 bg-[#E0DDD6] my-6" />
           <div className="relative z-10 flex items-center justify-between">
-            <div className="flex items-center gap-2">
-              <span
-                className="text-3xl font-bold font-mono leading-none"
-                style={{ color: gradeColor(gradeA.letter) }}
-              >
-                {gradeA.letter}
-              </span>
-              <span className="text-[10px] text-[#A8A29E] uppercase tracking-wider">Grade</span>
-            </div>
-            <span className="text-[10px] text-[#C8C4BC] uppercase tracking-widest">
+            <span
+              className="text-6xl font-bold font-mono leading-none"
+              style={{ color: gradeColor(gradeA.letter) }}
+            >
+              {gradeA.letter}
+            </span>
+            <span className="text-xs text-[#C8C4BC] uppercase tracking-widest">
               Analyzed by Outlier
             </span>
-            <div className="flex items-center gap-2">
-              <span className="text-[10px] text-[#A8A29E] uppercase tracking-wider">Grade</span>
-              <span
-                className="text-3xl font-bold font-mono leading-none"
-                style={{ color: gradeColor(gradeB.letter) }}
-              >
-                {gradeB.letter}
-              </span>
-            </div>
+            <span
+              className="text-6xl font-bold font-mono leading-none"
+              style={{ color: gradeColor(gradeB.letter) }}
+            >
+              {gradeB.letter}
+            </span>
           </div>
         </div>
       </div>

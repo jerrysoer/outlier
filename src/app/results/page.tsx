@@ -321,7 +321,7 @@ function ResultsDisplay({ result, onTryAnother }: { result: AnalysisResult; onTr
       <CoreFinding finding={result.coreFinding} structured={result.coreFindingStructured} />
       <StealThis
         tactics={result.viral.stealThisStrategy}
-        channelBName={channelBName}
+        channelAName={channelAName}
       />
 
       <div className="section-divider" />

@@ -148,6 +148,13 @@ const PRESETS: PresetData[] = [
     channelBName: "Gymshark",
     teaser: "Legacy athletic giant vs DTC disruptor",
   },
+  {
+    channelA: "@LennysPodcast",
+    channelB: "@howiaipodcast",
+    channelAName: "Lenny Rachitsky",
+    channelBName: "Claire Vo",
+    teaser: "PM podcast titans — newsletter empire vs AI-native builder",
+  },
 ];
 
 function pickRandom(arr: PresetData[], count: number): PresetData[] {

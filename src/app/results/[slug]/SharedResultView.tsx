@@ -112,7 +112,7 @@ export default function SharedResultView({ result }: Props) {
 
         {/* Strategic Insights */}
         <CoreFinding finding={result.coreFinding} structured={result.coreFindingStructured} />
-        <StealThis tactics={result.viral.stealThisStrategy} channelBName={channelBName} />
+        <StealThis tactics={result.viral.stealThisStrategy} channelAName={channelAName} />
 
         <div className="section-divider" />
 
