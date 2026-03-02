@@ -15,7 +15,7 @@ export async function generateOGImage(
 Style: bold, cinematic, high-energy. Split composition with two distinct sides. Warm cream (#FAF9F6) and emerald green (#0D9373) color accent. Vibrant and eye-catching. No watermarks. 1200x630 pixels, landscape orientation.`;
 
   const response = await ai.models.generateContent({
-    model: "gemini-2.5-flash-preview-image-generation",
+    model: "gemini-2.5-flash-image",
     contents: prompt,
     config: {
       responseModalities: ["IMAGE"],
