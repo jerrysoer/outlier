@@ -2,7 +2,7 @@ import { ImageResponse } from "next/og";
 import { getSupabase } from "@/lib/supabase";
 import type { AnalysisResult } from "@/lib/types";
 
-export const runtime = "nodejs";
+export const runtime = "edge";
 export const alt = "Outlier Analysis";
 export const size = { width: 1200, height: 630 };
 export const contentType = "image/png";
