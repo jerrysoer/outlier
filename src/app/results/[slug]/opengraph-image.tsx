@@ -240,7 +240,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               </div>
               {subsA != null && (
                 <div style={{ fontSize: "13px", color: "#6B6560", marginTop: "2px" }}>
-                  {formatCompact(subsA)} subs
+                  {`${formatCompact(subsA)} subs`}
                 </div>
               )}
             </div>
@@ -275,7 +275,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               </div>
               {subsB != null && (
                 <div style={{ fontSize: "13px", color: "#6B6560", marginTop: "2px" }}>
-                  {formatCompact(subsB)} subs
+                  {`${formatCompact(subsB)} subs`}
                 </div>
               )}
             </div>
