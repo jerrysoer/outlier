@@ -41,18 +41,21 @@ export async function POST(req: NextRequest) {
     // Generate image via Gemini
     const imageBuffer = await generateOGImage(channelA, channelB, coreFinding);
 
-    // Upload to Supabase Storage
+    // Upload to Supabase Storage (Uint8Array for cross-runtime compat)
     const filePath = `${slug}.png`;
     const { error: uploadError } = await supabase.storage
       .from("og-images")
-      .upload(filePath, imageBuffer, {
+      .upload(filePath, new Uint8Array(imageBuffer), {
         contentType: "image/png",
         upsert: true,
       });
 
     if (uploadError) {
       console.error("[generate-og] Upload error:", uploadError);
-      return NextResponse.json({ error: "Upload failed" }, { status: 500 });
+      return NextResponse.json(
+        { error: "Upload failed", detail: uploadError.message },
+        { status: 500 },
+      );
     }
 
     // Get public URL
