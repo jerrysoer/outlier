@@ -30,8 +30,15 @@ interface MetricRow {
   label: string;
   valueA: string;
   valueB: string;
+  rawA: number;
+  rawB: number;
   winnerA: boolean;
   winnerB: boolean;
+}
+
+function barWidth(raw: number, max: number): number {
+  if (max === 0) return 50;
+  return (raw / max) * 100;
 }
 
 function deriveMetrics(result: AnalysisResult): MetricRow[] {
@@ -44,6 +51,8 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
     label: "Engagement Rate",
     valueA: `${engA.toFixed(2)}%`,
     valueB: `${engB.toFixed(2)}%`,
+    rawA: engA,
+    rawB: engB,
     winnerA: engA > engB,
     winnerB: engB > engA,
   });
@@ -59,6 +68,8 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
     label: "Avg Views",
     valueA: formatCompact(Math.round(avgViewsA)),
     valueB: formatCompact(Math.round(avgViewsB)),
+    rawA: avgViewsA,
+    rawB: avgViewsB,
     winnerA: avgViewsA > avgViewsB,
     winnerB: avgViewsB > avgViewsA,
   });
@@ -70,6 +81,8 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
     label: "Upload Frequency",
     valueA: `${freqA}/wk`,
     valueB: `${freqB}/wk`,
+    rawA: freqA,
+    rawB: freqB,
     winnerA: freqA > freqB,
     winnerB: freqB > freqA,
   });
@@ -83,6 +96,8 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
       label: topSig.label,
       valueA: `${pctA}%`,
       valueB: `${pctB}%`,
+      rawA: pctA,
+      rawB: pctB,
       winnerA: pctA > pctB,
       winnerB: pctB > pctA,
     });
@@ -95,6 +110,8 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
     label: "Tags / Video",
     valueA: `${tagsA}`,
     valueB: `${tagsB}`,
+    rawA: tagsA,
+    rawB: tagsB,
     winnerA: tagsA > tagsB,
     winnerB: tagsB > tagsA,
   });
@@ -119,7 +136,7 @@ export default function HeadToHeadCard({ result }: Props) {
       const dataUrl = await toPng(cardRef.current, {
         width: 1080,
         height: 1080,
-        pixelRatio: 2,
+        pixelRatio: 1,
         backgroundColor: "#FAF9F6",
       });
       const link = document.createElement("a");
@@ -144,101 +161,135 @@ export default function HeadToHeadCard({ result }: Props) {
       <div className="label-mono mb-3">Head to Head</div>
 
       {/* Card — constrained for display, toPng forces 1080×1080 on export */}
-      <div className="max-w-xl mx-auto">
+      <div className="max-w-md mx-auto">
         <div
           ref={cardRef}
           style={{
             aspectRatio: "1 / 1",
             background: "linear-gradient(180deg, #FAF9F6 0%, #FFFFFF 100%)",
-            border: "1px solid rgba(224, 221, 214, 0.8)",
+            border: "2px solid #E0DDD6",
           }}
-          className="relative rounded-xl overflow-hidden flex flex-col p-10"
+          className="relative rounded-xl overflow-hidden flex flex-col px-10 py-8"
         >
-          {/* Zone 1: Header — channel names + divider */}
+          {/* Zone 1: Header — grades as hero + channel names + sub count */}
           <div className="relative z-10 flex items-center justify-between">
-            <div className="text-left flex-1 min-w-0">
-              <p className="text-xl font-bold text-[#2C2924] truncate">{channelAName}</p>
-              <p className="text-xs text-[#A8A29E] uppercase tracking-wider mt-0.5">
-                {result.channelA.meta.subscriberCount.toLocaleString()} subs
-              </p>
+            <div className="flex items-center gap-3 flex-1 min-w-0">
+              <span
+                className="text-5xl font-bold font-mono leading-none flex-shrink-0"
+                style={{ color: gradeColor(gradeA.letter) }}
+              >
+                {gradeA.letter}
+              </span>
+              <div className="min-w-0">
+                <p className="text-lg font-bold text-[#2C2924] truncate">{channelAName}</p>
+                <p className="text-xs text-[#A8A29E] uppercase tracking-wider">
+                  {formatCompact(result.channelA.meta.subscriberCount)} subscribers
+                </p>
+              </div>
             </div>
-            <div className="flex-shrink-0 mx-4">
+            <div className="flex-shrink-0 mx-3">
               <span className="text-sm font-bold tracking-widest text-[#C8C4BC] uppercase">VS</span>
             </div>
-            <div className="text-right flex-1 min-w-0">
-              <p className="text-xl font-bold text-[#2C2924] truncate">{channelBName}</p>
-              <p className="text-xs text-[#A8A29E] uppercase tracking-wider mt-0.5">
-                {result.channelB.meta.subscriberCount.toLocaleString()} subs
-              </p>
+            <div className="flex items-center gap-3 flex-1 min-w-0 justify-end">
+              <div className="min-w-0 text-right">
+                <p className="text-lg font-bold text-[#2C2924] truncate">{channelBName}</p>
+                <p className="text-xs text-[#A8A29E] uppercase tracking-wider">
+                  {formatCompact(result.channelB.meta.subscriberCount)} subscribers
+                </p>
+              </div>
+              <span
+                className="text-5xl font-bold font-mono leading-none flex-shrink-0"
+                style={{ color: gradeColor(gradeB.letter) }}
+              >
+                {gradeB.letter}
+              </span>
             </div>
           </div>
-          <div className="h-0.5 bg-[#E0DDD6] my-6" />
+          <div className="h-0.5 bg-[#E0DDD6] my-5" />
 
-          {/* Zone 2: Metrics — flex-1 to fill available space, centered vertically */}
+          {/* Zone 2: Bar charts — flex-1 to fill space, centered vertically */}
           <div className="relative z-10 flex-1 flex flex-col justify-center">
-            <div className="flex flex-col gap-6">
-              {metrics.map((row, i) => (
-                <div key={i} className="flex items-center gap-2">
-                  {/* Value A */}
-                  <div className="flex-1 flex items-center justify-end gap-2">
-                    <span
-                      className="text-2xl font-bold font-mono"
-                      style={{ color: row.winnerA ? "#0D9373" : "#A8A29E" }}
-                    >
-                      {row.valueA}
-                    </span>
-                    {row.winnerA && (
-                      <div className="w-7 h-7 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
-                        <Check size={16} color="#fff" strokeWidth={3} />
-                      </div>
-                    )}
-                    {!row.winnerA && <div className="w-7 h-7 flex-shrink-0" />}
-                  </div>
+            <div className="flex flex-col gap-4">
+              {metrics.map((row, i) => {
+                const max = Math.max(row.rawA, row.rawB);
+                const widthA = barWidth(row.rawA, max);
+                const widthB = barWidth(row.rawB, max);
 
-                  {/* Label */}
-                  <div className="w-[160px] text-center flex-shrink-0">
-                    <span className="text-sm text-[#6B6560] uppercase tracking-wide">
+                return (
+                  <div key={i} className="flex flex-col gap-1.5">
+                    {/* Metric label */}
+                    <span className="text-xs text-[#6B6560] uppercase tracking-wide font-medium">
                       {row.label}
                     </span>
-                  </div>
 
-                  {/* Value B */}
-                  <div className="flex-1 flex items-center gap-2">
-                    {row.winnerB && (
-                      <div className="w-7 h-7 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
-                        <Check size={16} color="#fff" strokeWidth={3} />
+                    {/* Channel A bar row */}
+                    <div className="flex items-center gap-2">
+                      <span className="w-16 text-xs text-[#2C2924] truncate font-medium flex-shrink-0">
+                        {channelAName}
+                      </span>
+                      <div className="flex-1 h-4 rounded-sm overflow-hidden" style={{ backgroundColor: "#E8E5E0" }}>
+                        <div
+                          className="h-full rounded-sm transition-all"
+                          style={{
+                            width: `${widthA}%`,
+                            backgroundColor: row.winnerA ? "#0D9373" : "#D6D3CE",
+                          }}
+                        />
                       </div>
-                    )}
-                    {!row.winnerB && <div className="w-7 h-7 flex-shrink-0" />}
-                    <span
-                      className="text-2xl font-bold font-mono"
-                      style={{ color: row.winnerB ? "#0D9373" : "#A8A29E" }}
-                    >
-                      {row.valueB}
-                    </span>
+                      <span
+                        className="text-xs font-mono font-bold flex-shrink-0 w-14 text-right"
+                        style={{ color: row.winnerA ? "#0D9373" : "#A8A29E" }}
+                      >
+                        {row.valueA}
+                      </span>
+                      {row.winnerA ? (
+                        <div className="w-4 h-4 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
+                          <Check size={10} color="#fff" strokeWidth={3} />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 flex-shrink-0" />
+                      )}
+                    </div>
+
+                    {/* Channel B bar row */}
+                    <div className="flex items-center gap-2">
+                      <span className="w-16 text-xs text-[#2C2924] truncate font-medium flex-shrink-0">
+                        {channelBName}
+                      </span>
+                      <div className="flex-1 h-4 rounded-sm overflow-hidden" style={{ backgroundColor: "#E8E5E0" }}>
+                        <div
+                          className="h-full rounded-sm transition-all"
+                          style={{
+                            width: `${widthB}%`,
+                            backgroundColor: row.winnerB ? "#0D9373" : "#D6D3CE",
+                          }}
+                        />
+                      </div>
+                      <span
+                        className="text-xs font-mono font-bold flex-shrink-0 w-14 text-right"
+                        style={{ color: row.winnerB ? "#0D9373" : "#A8A29E" }}
+                      >
+                        {row.valueB}
+                      </span>
+                      {row.winnerB ? (
+                        <div className="w-4 h-4 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
+                          <Check size={10} color="#fff" strokeWidth={3} />
+                        </div>
+                      ) : (
+                        <div className="w-4 h-4 flex-shrink-0" />
+                      )}
+                    </div>
                   </div>
-                </div>
-              ))}
+                );
+              })}
             </div>
           </div>
 
-          {/* Zone 3: Divider + Grades + Watermark */}
-          <div className="h-0.5 bg-[#E0DDD6] my-6" />
-          <div className="relative z-10 flex items-center justify-between">
-            <span
-              className="text-6xl font-bold font-mono leading-none"
-              style={{ color: gradeColor(gradeA.letter) }}
-            >
-              {gradeA.letter}
-            </span>
+          {/* Zone 3: Footer watermark */}
+          <div className="h-0.5 bg-[#E0DDD6] my-5" />
+          <div className="relative z-10 text-center">
             <span className="text-xs text-[#C8C4BC] uppercase tracking-widest">
-              Analyzed by Outlier
-            </span>
-            <span
-              className="text-6xl font-bold font-mono leading-none"
-              style={{ color: gradeColor(gradeB.letter) }}
-            >
-              {gradeB.letter}
+              Analyzed by Outlier · getoutlier.app
             </span>
           </div>
         </div>
