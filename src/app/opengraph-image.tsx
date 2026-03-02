@@ -146,7 +146,7 @@ export default function OGImage() {
               color: "#A8A29E",
             }}
           >
-            getoutlier.com
+            getoutlier.app
           </div>
         </div>
       </div>
