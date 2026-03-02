@@ -12,13 +12,17 @@ export async function generateOGImage(
 
   const prompt = `A professional YouTube thumbnail for a viral collaboration video between "${channelA}" and "${channelB}". ${coreFinding}.
 
-Style: bold, cinematic, high-energy. Split composition with two distinct sides. Warm cream (#FAF9F6) and emerald green (#0D9373) color accent. Vibrant and eye-catching. No watermarks. 1200x630 pixels, landscape orientation.`;
+Style: bold, cinematic, high-energy. Wide landscape composition split into two distinct sides. Warm cream (#FAF9F6) and emerald green (#0D9373) color accent. Vibrant and eye-catching. No watermarks.`;
 
   const response = await ai.models.generateContent({
     model: "gemini-2.5-flash-image",
     contents: prompt,
     config: {
       responseModalities: ["IMAGE"],
+      imageConfig: {
+        aspectRatio: "16:9",
+        imageSize: "1K",
+      },
     },
   });
 
