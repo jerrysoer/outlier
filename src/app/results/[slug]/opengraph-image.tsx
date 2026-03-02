@@ -11,11 +11,11 @@ export const contentType = "image/png";
 
 function gradeColor(letter: string): string {
   switch (letter[0]) {
-    case "A": return "#00D4AA";
-    case "B": return "#4B8BF5";
-    case "C": return "#F5C542";
-    case "D": return "#FF8C42";
-    case "F": return "#FF4D4D";
+    case "A": return "#0D9373";
+    case "B": return "#3B7DD8";
+    case "C": return "#B8860B";
+    case "D": return "#C27A1A";
+    case "F": return "#DC4A3E";
     default: return "#666";
   }
 }
@@ -51,14 +51,14 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
     const pctA = engA * 100;
     const pctB = engB * 100;
     rows.push({
-      label: "ENGAGEMENT RATE",
+      label: "ENGAGEMENT",
       valueA: `${pctA.toFixed(2)}%`,
       valueB: `${pctB.toFixed(2)}%`,
       winnerA: pctA > pctB,
       winnerB: pctB > pctA,
     });
   } else {
-    rows.push({ label: "ENGAGEMENT RATE", valueA: "—", valueB: "—", winnerA: false, winnerB: false });
+    rows.push({ label: "ENGAGEMENT", valueA: "—", valueB: "—", winnerA: false, winnerB: false });
   }
 
   // Avg Views
@@ -83,14 +83,14 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
   const freqB = result.uploadCadence?.channelB?.postsPerWeek;
   if (freqA != null && freqB != null) {
     rows.push({
-      label: "UPLOAD FREQ",
+      label: "UPLOADS",
       valueA: `${freqA}/wk`,
       valueB: `${freqB}/wk`,
       winnerA: freqA > freqB,
       winnerB: freqB > freqA,
     });
   } else {
-    rows.push({ label: "UPLOAD FREQ", valueA: "—", valueB: "—", winnerA: false, winnerB: false });
+    rows.push({ label: "UPLOADS", valueA: "—", valueB: "—", winnerA: false, winnerB: false });
   }
 
   return rows;
@@ -130,10 +130,10 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             padding: "60px 80px",
           }}
         >
-          <div style={{ fontSize: "40px", fontWeight: 700, color: "#2C2924", textAlign: "center" }}>
+          <div style={{ fontSize: "52px", fontWeight: 700, color: "#2C2924", textAlign: "center" }}>
             YouTube channel competitive analysis
           </div>
-          <div style={{ fontSize: "18px", color: "#6B6560", marginTop: "16px" }}>
+          <div style={{ fontSize: "24px", color: "#6B6560", marginTop: "16px" }}>
             Analyzed by Outlier
           </div>
         </div>
@@ -164,10 +164,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
   }
 
   // Extract data
-  const channelAName = truncate(result.channelA?.meta?.title || "Channel A", 22);
-  const channelBName = truncate(result.channelB?.meta?.title || "Channel B", 22);
-  const subsA = result.channelA?.meta?.subscriberCount;
-  const subsB = result.channelB?.meta?.subscriberCount;
+  const channelAName = truncate(result.channelA?.meta?.title || "Channel A", 18);
+  const channelBName = truncate(result.channelB?.meta?.title || "Channel B", 18);
   const gradeA = result.viral?.grades?.channelA?.letter;
   const gradeB = result.viral?.grades?.channelB?.letter;
   const metrics = deriveMetrics(result);
@@ -188,46 +186,33 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           height: "100%",
           display: "flex",
           flexDirection: "column",
-          padding: "40px 56px",
+          padding: "48px 64px",
           position: "relative",
           overflow: "hidden",
         }}
       >
-        {/* Top glow */}
-        <div
-          style={{
-            position: "absolute",
-            top: "-80px",
-            left: "50%",
-            width: "600px",
-            height: "300px",
-            background: "radial-gradient(ellipse at center, rgba(13, 147, 115, 0.06), transparent 70%)",
-            display: "flex",
-          }}
-        />
-
         {/* ─── Zone 1: Channel Header ─── */}
         <div
           style={{
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginBottom: "28px",
+            marginBottom: "24px",
           }}
         >
           {/* Channel A */}
           <div style={{ display: "flex", alignItems: "center", flex: 1 }}>
             <div
               style={{
-                width: "56px",
-                height: "56px",
+                width: "72px",
+                height: "72px",
                 borderRadius: "50%",
                 background: "#0D9373",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 marginRight: "16px",
-                fontSize: "24px",
+                fontSize: "30px",
                 fontWeight: 700,
                 color: "#fff",
               }}
@@ -235,14 +220,9 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               {initialA}
             </div>
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ fontSize: "22px", fontWeight: 700, color: "#2C2924", fontFamily: "DM Sans" }}>
+              <div style={{ fontSize: "36px", fontWeight: 700, color: "#2C2924", fontFamily: "DM Sans" }}>
                 {channelAName}
               </div>
-              {subsA != null && (
-                <div style={{ fontSize: "13px", color: "#6B6560", marginTop: "2px" }}>
-                  {`${formatCompact(subsA)} subs`}
-                </div>
-              )}
             </div>
           </div>
 
@@ -257,7 +237,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           >
             <div
               style={{
-                fontSize: "16px",
+                fontSize: "28px",
                 fontWeight: 700,
                 color: "#A8A29E",
                 letterSpacing: "0.2em",
@@ -270,26 +250,21 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           {/* Channel B */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", flex: 1 }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-              <div style={{ fontSize: "22px", fontWeight: 700, color: "#2C2924", fontFamily: "DM Sans" }}>
+              <div style={{ fontSize: "36px", fontWeight: 700, color: "#2C2924", fontFamily: "DM Sans" }}>
                 {channelBName}
               </div>
-              {subsB != null && (
-                <div style={{ fontSize: "13px", color: "#6B6560", marginTop: "2px" }}>
-                  {`${formatCompact(subsB)} subs`}
-                </div>
-              )}
             </div>
             <div
               style={{
-                width: "56px",
-                height: "56px",
+                width: "72px",
+                height: "72px",
                 borderRadius: "50%",
                 background: "#0D9373",
                 display: "flex",
                 alignItems: "center",
                 justifyContent: "center",
                 marginLeft: "16px",
-                fontSize: "24px",
+                fontSize: "30px",
                 fontWeight: 700,
                 color: "#fff",
               }}
@@ -300,7 +275,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         </div>
 
         {/* Divider */}
-        <div style={{ height: "1px", background: "#E0DDD6", width: "100%", display: "flex" }} />
+        <div style={{ height: "2px", background: "#E0DDD6", width: "100%", display: "flex" }} />
 
         {/* ─── Zone 2: Metric Rows ─── */}
         <div
@@ -317,14 +292,14 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               style={{
                 display: "flex",
                 alignItems: "center",
-                marginBottom: i < metrics.length - 1 ? "24px" : "0px",
+                marginBottom: i < metrics.length - 1 ? "28px" : "0px",
               }}
             >
               {/* Value A side */}
               <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "flex-end" }}>
                 <div
                   style={{
-                    fontSize: "28px",
+                    fontSize: "40px",
                     fontWeight: 700,
                     fontFamily: "monospace",
                     color: row.winnerA ? "#0D9373" : "#6B6560",
@@ -336,8 +311,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                 {/* Winner indicator */}
                 <div
                   style={{
-                    width: "24px",
-                    height: "24px",
+                    width: "32px",
+                    height: "32px",
                     borderRadius: "50%",
                     background: row.winnerA ? "#0D9373" : "#E0DDD6",
                     display: "flex",
@@ -346,7 +321,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                   }}
                 >
                   {row.winnerA ? (
-                    <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#fff" }} />
+                    <div style={{ width: "14px", height: "14px", borderRadius: "50%", background: "#fff" }} />
                   ) : null}
                 </div>
               </div>
@@ -354,7 +329,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               {/* Label */}
               <div
                 style={{
-                  width: "200px",
+                  width: "180px",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -362,7 +337,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               >
                 <div
                   style={{
-                    fontSize: "12px",
+                    fontSize: "20px",
                     color: "#A8A29E",
                     letterSpacing: "0.12em",
                     fontFamily: "monospace",
@@ -377,8 +352,8 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                 {/* Winner indicator */}
                 <div
                   style={{
-                    width: "24px",
-                    height: "24px",
+                    width: "32px",
+                    height: "32px",
                     borderRadius: "50%",
                     background: row.winnerB ? "#0D9373" : "#E0DDD6",
                     display: "flex",
@@ -387,12 +362,12 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                   }}
                 >
                   {row.winnerB ? (
-                    <div style={{ width: "8px", height: "8px", borderRadius: "50%", background: "#fff" }} />
+                    <div style={{ width: "14px", height: "14px", borderRadius: "50%", background: "#fff" }} />
                   ) : null}
                 </div>
                 <div
                   style={{
-                    fontSize: "28px",
+                    fontSize: "40px",
                     fontWeight: 700,
                     fontFamily: "monospace",
                     color: row.winnerB ? "#0D9373" : "#6B6560",
@@ -407,7 +382,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         </div>
 
         {/* Divider */}
-        <div style={{ height: "1px", background: "#E0DDD6", width: "100%", display: "flex" }} />
+        <div style={{ height: "2px", background: "#E0DDD6", width: "100%", display: "flex" }} />
 
         {/* ─── Zone 3: Grades + Watermark ─── */}
         <div
@@ -415,7 +390,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             display: "flex",
             alignItems: "center",
             justifyContent: "space-between",
-            marginTop: "24px",
+            marginTop: "20px",
           }}
         >
           {/* Grade A */}
@@ -423,34 +398,24 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             {gradeA && (
               <div
                 style={{
-                  fontSize: "42px",
+                  fontSize: "64px",
                   fontWeight: 700,
                   fontFamily: "monospace",
                   color: gradeColor(gradeA),
                   lineHeight: 1,
-                  marginRight: "10px",
                 }}
               >
                 {gradeA}
               </div>
             )}
-            <div
-              style={{
-                fontSize: "11px",
-                color: "#A8A29E",
-                letterSpacing: "0.12em",
-              }}
-            >
-              GRADE
-            </div>
           </div>
 
           {/* Watermark */}
           <div style={{ display: "flex", alignItems: "center" }}>
             <div
               style={{
-                width: "6px",
-                height: "6px",
+                width: "10px",
+                height: "10px",
                 borderRadius: "50%",
                 background: "#0D9373",
                 marginRight: "8px",
@@ -458,35 +423,25 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             />
             <div
               style={{
-                fontSize: "12px",
+                fontSize: "18px",
                 color: "#A8A29E",
                 letterSpacing: "0.15em",
               }}
             >
-              ANALYZED BY OUTLIER
+              OUTLIER
             </div>
           </div>
 
           {/* Grade B */}
           <div style={{ display: "flex", alignItems: "center" }}>
-            <div
-              style={{
-                fontSize: "11px",
-                color: "#A8A29E",
-                letterSpacing: "0.12em",
-              }}
-            >
-              GRADE
-            </div>
             {gradeB && (
               <div
                 style={{
-                  fontSize: "42px",
+                  fontSize: "64px",
                   fontWeight: 700,
                   fontFamily: "monospace",
                   color: gradeColor(gradeB),
                   lineHeight: 1,
-                  marginLeft: "10px",
                 }}
               >
                 {gradeB}
