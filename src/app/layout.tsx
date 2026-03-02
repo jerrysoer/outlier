@@ -16,7 +16,7 @@ const dmSans = DM_Sans({
   weight: ["300", "400", "500", "600", "700"],
 });
 
-const siteUrl = "https://getoutlier.com";
+const siteUrl = "https://getoutlier.app";
 
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
