@@ -114,9 +114,12 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
   // Fetch font (DM Sans Bold 700)
   let fontData: ArrayBuffer | null = null;
   try {
-    fontData = await fetch(
-      "https://fonts.gstatic.com/s/dmsans/v15/rP2Hp2ywxg089UriCZ2IHTWEBlwu8Q.ttf"
-    ).then(r => r.arrayBuffer());
+    const fontRes = await fetch(
+      "https://fonts.gstatic.com/s/dmsans/v17/rP2tp2ywxg089UriI5-g4vlH9VoD8CmcqZG40F9JadbnoEwARZthTg.ttf"
+    );
+    if (fontRes.ok) {
+      fontData = await fontRes.arrayBuffer();
+    }
   } catch {
     // Fall back to system font
   }
