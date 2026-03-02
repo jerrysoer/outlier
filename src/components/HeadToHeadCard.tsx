@@ -10,13 +10,13 @@ interface Props {
 }
 
 function gradeColor(letter: string): string {
-  switch (letter) {
-    case "A": return "#00D4AA";
-    case "B": return "#4B8BF5";
-    case "C": return "#F5C542";
-    case "D": return "#FF8C42";
-    case "F": return "#FF4D4D";
-    default: return "#666";
+  switch (letter[0]) {
+    case "A": return "#0D9373";
+    case "B": return "#3B7DD8";
+    case "C": return "#B8860B";
+    case "D": return "#C27A1A";
+    case "F": return "#DC4A3E";
+    default: return "#A8A29E";
   }
 }
 
@@ -120,7 +120,7 @@ export default function HeadToHeadCard({ result }: Props) {
         width: 1080,
         height: 1080,
         pixelRatio: 2,
-        backgroundColor: "#0A0A0F",
+        backgroundColor: "#FAF9F6",
       });
       const link = document.createElement("a");
       link.download = `outlier-h2h-${channelAName.toLowerCase().replace(/\s+/g, "-")}-vs-${channelBName.toLowerCase().replace(/\s+/g, "-")}.png`;
@@ -149,38 +149,32 @@ export default function HeadToHeadCard({ result }: Props) {
           ref={cardRef}
           style={{
             aspectRatio: "1 / 1",
-            background: "linear-gradient(180deg, #0A0A0F 0%, #0D0D18 100%)",
-            border: "1px solid rgba(255, 77, 0, 0.15)",
+            background: "linear-gradient(180deg, #FAF9F6 0%, #FFFFFF 100%)",
+            border: "1px solid rgba(224, 221, 214, 0.8)",
           }}
           className="relative rounded-xl overflow-hidden flex flex-col justify-between p-6"
         >
-          {/* Glow */}
-          <div
-            className="absolute top-0 left-1/2 -translate-x-1/2 w-96 h-48 pointer-events-none"
-            style={{ background: "radial-gradient(ellipse, rgba(255, 77, 0, 0.06), transparent 70%)" }}
-          />
-
           {/* Header — channel names */}
           <div className="relative z-10 flex items-center justify-between">
             <div className="text-left flex-1 min-w-0">
-              <p className="text-sm font-bold text-white truncate">{channelAName}</p>
-              <p className="text-[10px] text-[#888] uppercase tracking-wider mt-0.5">
+              <p className="text-sm font-bold text-[#2C2924] truncate">{channelAName}</p>
+              <p className="text-[10px] text-[#A8A29E] uppercase tracking-wider mt-0.5">
                 {result.channelA.meta.subscriberCount.toLocaleString()} subs
               </p>
             </div>
             <div className="flex-shrink-0 mx-4">
-              <span className="text-xs font-bold tracking-widest text-[#555] uppercase">VS</span>
+              <span className="text-xs font-bold tracking-widest text-[#C8C4BC] uppercase">VS</span>
             </div>
             <div className="text-right flex-1 min-w-0">
-              <p className="text-sm font-bold text-white truncate">{channelBName}</p>
-              <p className="text-[10px] text-[#888] uppercase tracking-wider mt-0.5">
+              <p className="text-sm font-bold text-[#2C2924] truncate">{channelBName}</p>
+              <p className="text-[10px] text-[#A8A29E] uppercase tracking-wider mt-0.5">
                 {result.channelB.meta.subscriberCount.toLocaleString()} subs
               </p>
             </div>
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-[#1A1A2E] my-4" />
+          <div className="h-px bg-[#E0DDD6] my-4" />
 
           {/* Metric rows */}
           <div className="relative z-10 flex flex-col gap-4">
@@ -190,12 +184,12 @@ export default function HeadToHeadCard({ result }: Props) {
                 <div className="flex-1 flex items-center justify-end gap-2">
                   <span
                     className="text-base font-bold font-mono"
-                    style={{ color: row.winnerA ? "#FF4D00" : "#888" }}
+                    style={{ color: row.winnerA ? "#0D9373" : "#A8A29E" }}
                   >
                     {row.valueA}
                   </span>
                   {row.winnerA && (
-                    <div className="w-5 h-5 rounded-full bg-[#FF4D00] flex items-center justify-center flex-shrink-0">
+                    <div className="w-5 h-5 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
                       <Check size={12} color="#fff" strokeWidth={3} />
                     </div>
                   )}
@@ -204,7 +198,7 @@ export default function HeadToHeadCard({ result }: Props) {
 
                 {/* Label */}
                 <div className="w-[120px] text-center flex-shrink-0">
-                  <span className="text-[11px] text-[#666] uppercase tracking-wide">
+                  <span className="text-[11px] text-[#6B6560] uppercase tracking-wide">
                     {row.label}
                   </span>
                 </div>
@@ -212,14 +206,14 @@ export default function HeadToHeadCard({ result }: Props) {
                 {/* Value B */}
                 <div className="flex-1 flex items-center gap-2">
                   {row.winnerB && (
-                    <div className="w-5 h-5 rounded-full bg-[#FF4D00] flex items-center justify-center flex-shrink-0">
+                    <div className="w-5 h-5 rounded-full bg-[#0D9373] flex items-center justify-center flex-shrink-0">
                       <Check size={12} color="#fff" strokeWidth={3} />
                     </div>
                   )}
                   {!row.winnerB && <div className="w-5 h-5 flex-shrink-0" />}
                   <span
                     className="text-base font-bold font-mono"
-                    style={{ color: row.winnerB ? "#FF4D00" : "#888" }}
+                    style={{ color: row.winnerB ? "#0D9373" : "#A8A29E" }}
                   >
                     {row.valueB}
                   </span>
@@ -229,7 +223,7 @@ export default function HeadToHeadCard({ result }: Props) {
           </div>
 
           {/* Divider */}
-          <div className="h-px bg-[#1A1A2E] my-4" />
+          <div className="h-px bg-[#E0DDD6] my-4" />
 
           {/* Grades + Watermark */}
           <div className="relative z-10 flex items-center justify-between">
@@ -240,13 +234,13 @@ export default function HeadToHeadCard({ result }: Props) {
               >
                 {gradeA.letter}
               </span>
-              <span className="text-[10px] text-[#555] uppercase tracking-wider">Grade</span>
+              <span className="text-[10px] text-[#A8A29E] uppercase tracking-wider">Grade</span>
             </div>
-            <span className="text-[10px] text-[#444] uppercase tracking-widest">
+            <span className="text-[10px] text-[#C8C4BC] uppercase tracking-widest">
               Analyzed by Outlier
             </span>
             <div className="flex items-center gap-2">
-              <span className="text-[10px] text-[#555] uppercase tracking-wider">Grade</span>
+              <span className="text-[10px] text-[#A8A29E] uppercase tracking-wider">Grade</span>
               <span
                 className="text-3xl font-bold font-mono leading-none"
                 style={{ color: gradeColor(gradeB.letter) }}

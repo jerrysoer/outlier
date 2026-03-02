@@ -12,7 +12,7 @@ interface Props {
 function GradeCircle({ grade }: { grade: string }) {
   let color: string;
   if (grade.startsWith("A")) color = "var(--positive)";
-  else if (grade.startsWith("B")) color = "#4B8BF5";
+  else if (grade.startsWith("B")) color = "#3B7DD8";
   else if (grade.startsWith("C")) color = "var(--caution)";
   else if (grade.startsWith("D")) color = "var(--warning)";
   else color = "var(--negative)";

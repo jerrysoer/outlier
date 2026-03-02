@@ -8,8 +8,8 @@ interface Props {
 
 const CORRELATION_CONFIG = {
   strong_positive: { color: "var(--positive)", label: "Strong +" },
-  moderate_positive: { color: "#4B8BF5", label: "Moderate +" },
-  neutral: { color: "var(--text-muted)", label: "Neutral" },
+  moderate_positive: { color: "#3B7DD8", label: "Moderate +" },
+  neutral: { color: "var(--text-secondary)", label: "Neutral" },
   negative: { color: "var(--negative)", label: "Negative" },
 } as const;
 
@@ -25,7 +25,7 @@ function BarRow({ data, maxGap }: { data: ThumbnailCorrelationType; maxGap: numb
       className="grid items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors"
       style={{
         gridTemplateColumns: "140px 1fr 60px",
-        opacity: isNeutral ? 0.6 : 1,
+        opacity: isNeutral ? 0.75 : 1,
       }}
     >
       {/* Signal name + correlation dot */}
@@ -72,7 +72,7 @@ function BarRow({ data, maxGap }: { data: ThumbnailCorrelationType; maxGap: numb
           className="inline-block px-1.5 py-0.5 rounded text-[11px] font-mono"
           style={{
             backgroundColor: isNeutral
-              ? "rgba(136, 136, 170, 0.1)"
+              ? "rgba(107, 101, 96, 0.1)"
               : `color-mix(in srgb, ${config.color} 12%, transparent)`,
             color: config.color,
           }}

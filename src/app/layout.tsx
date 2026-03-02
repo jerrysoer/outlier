@@ -62,7 +62,7 @@ export default function RootLayout({
   return (
     <html lang="en">
       <head>
-        <meta name="theme-color" content="#0A0A0F" />
+        <meta name="theme-color" content="#FAF9F6" />
       </head>
       <body
         className={`${spaceMono.variable} ${dmSans.variable} antialiased`}

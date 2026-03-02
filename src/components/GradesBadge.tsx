@@ -9,9 +9,9 @@ interface Props {
 }
 
 function gradeColor(letter: string): string {
-  switch (letter) {
+  switch (letter[0]) {
     case "A": return "var(--positive)";
-    case "B": return "#4B8BF5";
+    case "B": return "#3B7DD8";
     case "C": return "var(--caution)";
     case "D": return "var(--warning)";
     case "F": return "var(--negative)";
