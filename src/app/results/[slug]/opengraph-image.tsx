@@ -123,45 +123,21 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
 
   // Default fallback content
   let result: AnalysisResult | null = null;
-  let ogImageUrl: string | null = null;
 
   const supabase = getSupabase();
   if (supabase) {
     try {
       const { data } = await supabase
         .from("audits")
-        .select("result_json, og_image_url")
+        .select("result_json")
         .eq("slug", slug)
         .single();
 
       if (data?.result_json) {
         result = data.result_json as AnalysisResult;
       }
-      if (data?.og_image_url) {
-        ogImageUrl = data.og_image_url;
-      }
     } catch {
       // Use fallback
-    }
-  }
-
-  // Check for AI-generated OG image
-  if (ogImageUrl) {
-    try {
-      const imgRes = await fetch(ogImageUrl);
-      if (imgRes.ok) {
-        const buf = await imgRes.arrayBuffer();
-        if (buf.byteLength > 0) {
-          return new Response(buf, {
-            headers: {
-              "Content-Type": "image/png",
-              "Cache-Control": "public, max-age=86400",
-            },
-          });
-        }
-      }
-    } catch {
-      // Fall through to static card
     }
   }
 
