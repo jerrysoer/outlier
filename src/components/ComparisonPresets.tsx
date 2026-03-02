@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
 import { Zap } from "lucide-react";
 import type { PresetData } from "@/lib/types";
@@ -40,10 +41,55 @@ const PRESETS: PresetData[] = [
     channelBName: "Good Good",
     teaser: "Court vs course — sports content clash",
   },
+  {
+    channelA: "@michellekhare",
+    channelB: "@yestheory",
+    channelAName: "Michelle Khare",
+    channelBName: "Yes Theory",
+    teaser: "Extreme challenges — solo grit vs squad energy",
+  },
+  {
+    channelA: "@johnnyharris",
+    channelB: "@wendoverproductions",
+    channelAName: "Johnny Harris",
+    channelBName: "Wendover",
+    teaser: "Explainer kings — style vs substance",
+  },
+  {
+    channelA: "@SaturdayNightLive",
+    channelB: "@buzzfeedvideo",
+    channelAName: "SNL",
+    channelBName: "BuzzFeed Video",
+    teaser: "Sketch comedy meets internet entertainment",
+  },
+  {
+    channelA: "@veritasium",
+    channelB: "@markrober",
+    channelAName: "Veritasium",
+    channelBName: "Mark Rober",
+    teaser: "Science deep dives vs science spectacle",
+  },
+  {
+    channelA: "@jubilee",
+    channelB: "@cut",
+    channelAName: "Jubilee",
+    channelBName: "Cut",
+    teaser: "Social experiments — debate vs dare",
+  },
 ];
+
+function pickRandom(arr: PresetData[], count: number): PresetData[] {
+  const shuffled = [...arr];
+  for (let i = shuffled.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+  }
+  return shuffled.slice(0, count);
+}
 
 export default function ComparisonPresets() {
   const router = useRouter();
+  const [presets] = useState(() => pickRandom(PRESETS, 5));
 
   function handleClick(preset: PresetData) {
     router.push(`/results?a=${encodeURIComponent(preset.channelA)}&b=${encodeURIComponent(preset.channelB)}`);
@@ -53,7 +99,7 @@ export default function ComparisonPresets() {
     <div className="animate-fade-in-up" style={{ opacity: 0, animationDelay: "400ms" }}>
       <div className="label-mono mb-3 text-center">Famous Matchups</div>
       <div className="grid grid-cols-1 sm:grid-cols-5 gap-2">
-        {PRESETS.map((preset) => (
+        {presets.map((preset) => (
           <button
             key={preset.channelA}
             onClick={() => handleClick(preset)}
