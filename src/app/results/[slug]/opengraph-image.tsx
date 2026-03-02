@@ -150,12 +150,15 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     try {
       const imgRes = await fetch(ogImageUrl);
       if (imgRes.ok) {
-        return new Response(imgRes.body, {
-          headers: {
-            "Content-Type": "image/png",
-            "Cache-Control": "public, max-age=86400",
-          },
-        });
+        const buf = await imgRes.arrayBuffer();
+        if (buf.byteLength > 0) {
+          return new Response(buf, {
+            headers: {
+              "Content-Type": "image/png",
+              "Cache-Control": "public, max-age=86400",
+            },
+          });
+        }
       }
     } catch {
       // Fall through to static card
