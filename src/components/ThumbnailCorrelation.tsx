@@ -13,99 +13,71 @@ const CORRELATION_CONFIG = {
   negative: { color: "var(--negative)", label: "Negative" },
 } as const;
 
-function DumbbellTile({ data }: { data: ThumbnailCorrelationType }) {
+function BarRow({ data, maxGap }: { data: ThumbnailCorrelationType; maxGap: number }) {
   const config = CORRELATION_CONFIG[data.correlation];
-
-  // Positions on a 0-100% horizontal scale
-  const bottomPos = Math.max(0, Math.min(100, data.bottomPresence));
-  const topPos = Math.max(0, Math.min(100, data.topPresence));
-  const leftPos = Math.min(bottomPos, topPos);
-  const rightPos = Math.max(bottomPos, topPos);
-
-  // Determine left border color by correlation type
-  const borderColor = data.correlation === "neutral"
-    ? "var(--border)"
-    : config.color;
-
   const isNeutral = data.correlation === "neutral";
+  const barWidth = maxGap > 0 ? (Math.abs(data.gapPp) / maxGap) * 100 : 0;
+  const isPositive = data.gapPp >= 0;
+  const prefix = isPositive ? "+" : "";
 
   return (
     <div
-      className="card p-3"
+      className="grid items-center gap-3 px-3 py-2.5 rounded-lg hover:bg-[var(--bg-elevated)] transition-colors"
       style={{
-        borderLeftWidth: 3,
-        borderLeftColor: borderColor,
-        opacity: isNeutral ? 0.7 : 1,
+        gridTemplateColumns: "140px 1fr 60px",
+        opacity: isNeutral ? 0.6 : 1,
       }}
     >
-      {/* Header: signal name + correlation dot */}
-      <div className="flex items-center justify-between gap-2 mb-1">
-        <span className="text-[13px] font-medium text-[var(--text-primary)] truncate">
+      {/* Signal name + correlation dot */}
+      <div className="flex items-center gap-2 min-w-0">
+        <span
+          className="w-2 h-2 rounded-full shrink-0"
+          style={{ backgroundColor: config.color }}
+        />
+        <span className="text-[13px] text-[var(--text-primary)] truncate">
           {data.label}
         </span>
-        <div className="flex items-center gap-1.5 shrink-0">
-          <span
-            className="correlation-dot"
-            style={{ backgroundColor: config.color }}
+      </div>
+
+      {/* Diverging bar */}
+      <div className="relative h-5 flex items-center">
+        {/* Center axis */}
+        <div className="absolute left-1/2 top-0 bottom-0 w-px bg-[var(--border-bright)]" />
+
+        {/* Bar: extends left (negative) or right (positive) from center */}
+        {isPositive ? (
+          <div
+            className="absolute left-1/2 h-full rounded-r-sm transition-all duration-500"
+            style={{
+              width: `${barWidth / 2}%`,
+              backgroundColor: config.color,
+              opacity: 0.8,
+            }}
           />
-          <span className="text-[10px] text-[var(--text-muted)] uppercase tracking-wider">
-            {config.label}
-          </span>
-        </div>
+        ) : (
+          <div
+            className="absolute right-1/2 h-full rounded-l-sm transition-all duration-500"
+            style={{
+              width: `${barWidth / 2}%`,
+              backgroundColor: config.color,
+              opacity: 0.8,
+            }}
+          />
+        )}
       </div>
 
-      {/* Dumbbell track */}
-      <div className="dumbbell-track">
-        {/* Connecting line */}
-        <div
-          className="dumbbell-line"
-          style={{
-            left: `${leftPos}%`,
-            width: `${rightPos - leftPos}%`,
-            backgroundColor: config.color,
-            opacity: 0.4,
-          }}
-        />
-
-        {/* Bottom-10 dot (left conceptually) */}
-        <div
-          className="dumbbell-dot"
-          style={{
-            left: `${bottomPos}%`,
-            backgroundColor: isNeutral ? "var(--bg-elevated)" : config.color,
-            opacity: 0.6,
-          }}
-        />
+      {/* Gap badge */}
+      <div className="text-right">
         <span
-          className="dumbbell-label"
-          style={{ left: `${bottomPos}%` }}
-        >
-          {data.bottomPresence}%
-        </span>
-
-        {/* Top-10 dot (right conceptually) */}
-        <div
-          className="dumbbell-dot"
+          className="inline-block px-1.5 py-0.5 rounded text-[11px] font-mono"
           style={{
-            left: `${topPos}%`,
-            backgroundColor: config.color,
+            backgroundColor: isNeutral
+              ? "rgba(136, 136, 170, 0.1)"
+              : `color-mix(in srgb, ${config.color} 12%, transparent)`,
+            color: config.color,
           }}
-        />
-        <span
-          className="dumbbell-label"
-          style={{ left: `${topPos}%` }}
         >
-          {data.topPresence}%
-        </span>
-      </div>
-
-      {/* Scale labels */}
-      <div className="flex justify-between mt-4">
-        <span className="text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
-          Bottom 10
-        </span>
-        <span className="text-[9px] text-[var(--text-muted)] uppercase tracking-wider">
-          Top 10
+          {prefix}{data.gapPp}pp
         </span>
       </div>
     </div>
@@ -119,6 +91,8 @@ export default function ThumbnailCorrelation({ correlations }: Props) {
     (a, b) => sortOrder[a.correlation] - sortOrder[b.correlation]
   );
 
+  const maxGap = Math.max(...correlations.map((c) => Math.abs(c.gapPp)), 1);
+
   return (
     <div className="animate-fade-in-up" style={{ opacity: 0, animationDelay: "150ms" }}>
       <div className="label-mono mb-3">Thumbnail Performance Correlation</div>
@@ -126,10 +100,27 @@ export default function ThumbnailCorrelation({ correlations }: Props) {
         Across both channels: which visual signals appear more in top-performing videos vs bottom-performing ones?
       </p>
 
-      {/* 2-column grid — 1-col on mobile */}
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+      <div className="card p-2">
+        {/* Axis header */}
+        <div
+          className="grid items-center gap-3 px-3 py-2 border-b border-[var(--border)]"
+          style={{ gridTemplateColumns: "140px 1fr 60px" }}
+        >
+          <span className="text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+            Signal
+          </span>
+          <div className="flex justify-between text-[10px] uppercase tracking-wider text-[var(--text-muted)]">
+            <span>◄ More in bottom 10</span>
+            <span>More in top 10 ►</span>
+          </div>
+          <span className="text-[10px] uppercase tracking-wider text-[var(--text-muted)] text-right">
+            Gap
+          </span>
+        </div>
+
+        {/* Rows */}
         {sorted.map((c) => (
-          <DumbbellTile key={c.signal} data={c} />
+          <BarRow key={c.signal} data={c} maxGap={maxGap} />
         ))}
       </div>
     </div>
