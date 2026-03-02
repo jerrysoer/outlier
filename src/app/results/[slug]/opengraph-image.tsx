@@ -179,7 +179,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     ? [{ name: "DM Sans", data: fontData, weight: 700 as const }]
     : [];
 
-  return new ImageResponse(
+  const response = new ImageResponse(
     (
       <div
         style={{
@@ -498,6 +498,16 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     ),
     { ...size, fonts }
   );
+
+  // Buffer the response — Satori renders lazily during stream read,
+  // so 0-byte failures only surface here, not during construction.
+  const buf = await response.arrayBuffer();
+  if (buf.byteLength > 0) {
+    return new Response(buf, {
+      headers: { "Content-Type": "image/png", "Cache-Control": "public, max-age=3600" },
+    });
+  }
+  return fallback();
 
   } catch {
     return fallback();
