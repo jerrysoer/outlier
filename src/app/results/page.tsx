@@ -86,6 +86,12 @@ function ResultsContent() {
           setResult(json.data);
           if (json.data.slug) {
             window.history.pushState({}, "", `/results/${json.data.slug}`);
+            // Generate OG if not already cached
+            fetch("/api/generate-og", {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify({ slug: json.data.slug }),
+            }).catch(() => {});
           }
           return;
         }
@@ -124,6 +130,12 @@ function ResultsContent() {
               // Push shareable URL if slug available
               if (event.data.slug) {
                 window.history.pushState({}, "", `/results/${event.data.slug}`);
+                // Fire-and-forget: generate AI OG image in background
+                fetch("/api/generate-og", {
+                  method: "POST",
+                  headers: { "Content-Type": "application/json" },
+                  body: JSON.stringify({ slug: event.data.slug }),
+                }).catch(() => {});
               }
               return;
             }

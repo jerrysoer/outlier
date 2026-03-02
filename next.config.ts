@@ -4,7 +4,7 @@ const nextConfig: NextConfig = {
   turbopack: {
     root: __dirname,
   },
-  serverExternalPackages: ["@anthropic-ai/sdk"],
+  serverExternalPackages: ["@anthropic-ai/sdk", "@google/genai"],
   images: {
     remotePatterns: [
       {

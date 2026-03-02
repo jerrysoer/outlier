@@ -10,7 +10,7 @@ export default function OGImage() {
     (
       <div
         style={{
-          background: "#0A0A0F",
+          background: "#FAF9F6",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -31,7 +31,7 @@ export default function OGImage() {
             width: "500px",
             height: "500px",
             background:
-              "radial-gradient(ellipse at center, rgba(6, 214, 160, 0.12), transparent 70%)",
+              "radial-gradient(ellipse at center, rgba(13, 147, 115, 0.12), transparent 70%)",
           }}
         />
 
@@ -44,7 +44,7 @@ export default function OGImage() {
             width: "400px",
             height: "400px",
             background:
-              "radial-gradient(ellipse at center, rgba(6, 214, 160, 0.06), transparent 70%)",
+              "radial-gradient(ellipse at center, rgba(13, 147, 115, 0.06), transparent 70%)",
           }}
         />
 
@@ -57,7 +57,7 @@ export default function OGImage() {
             width: "48px",
             height: "48px",
             borderRadius: "50%",
-            border: "3px solid rgba(6, 214, 160, 0.25)",
+            border: "3px solid rgba(13, 147, 115, 0.20)",
             display: "flex",
           }}
         />
@@ -69,7 +69,7 @@ export default function OGImage() {
             width: "12px",
             height: "12px",
             borderRadius: "50%",
-            background: "#06D6A0",
+            background: "#0D9373",
           }}
         />
 
@@ -80,7 +80,7 @@ export default function OGImage() {
             fontFamily: "monospace",
             letterSpacing: "0.15em",
             textTransform: "uppercase",
-            color: "#06D6A0",
+            color: "#0D9373",
             marginBottom: "28px",
           }}
         >
@@ -92,7 +92,7 @@ export default function OGImage() {
           style={{
             fontSize: "50px",
             fontWeight: 700,
-            color: "#F0F0FF",
+            color: "#2C2924",
             textAlign: "center",
             lineHeight: 1.15,
             maxWidth: "880px",
@@ -106,7 +106,7 @@ export default function OGImage() {
         <div
           style={{
             fontSize: "20px",
-            color: "#8888AA",
+            color: "#6B6560",
             textAlign: "center",
           }}
         >
@@ -128,14 +128,14 @@ export default function OGImage() {
               width: "8px",
               height: "8px",
               borderRadius: "50%",
-              background: "#06D6A0",
+              background: "#0D9373",
             }}
           />
           <div
             style={{
               fontSize: "18px",
               fontWeight: 700,
-              color: "#F0F0FF",
+              color: "#2C2924",
             }}
           >
             Outlier
@@ -143,7 +143,7 @@ export default function OGImage() {
           <div
             style={{
               fontSize: "14px",
-              color: "#4A4A5A",
+              color: "#A8A29E",
             }}
           >
             getoutlier.com

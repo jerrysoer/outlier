@@ -10,7 +10,7 @@ export const contentType = "image/png";
 // ── Utility functions (ported from HeadToHeadCard) ──
 
 function gradeColor(letter: string): string {
-  switch (letter) {
+  switch (letter[0]) {
     case "A": return "#00D4AA";
     case "B": return "#4B8BF5";
     case "C": return "#F5C542";
@@ -123,21 +123,42 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
 
   // Default fallback content
   let result: AnalysisResult | null = null;
+  let ogImageUrl: string | null = null;
 
   const supabase = getSupabase();
   if (supabase) {
     try {
       const { data } = await supabase
         .from("audits")
-        .select("result_json")
+        .select("result_json, og_image_url")
         .eq("slug", slug)
         .single();
 
       if (data?.result_json) {
         result = data.result_json as AnalysisResult;
       }
+      if (data?.og_image_url) {
+        ogImageUrl = data.og_image_url;
+      }
     } catch {
       // Use fallback
+    }
+  }
+
+  // Check for AI-generated OG image
+  if (ogImageUrl) {
+    try {
+      const imgRes = await fetch(ogImageUrl);
+      if (imgRes.ok) {
+        return new Response(imgRes.body, {
+          headers: {
+            "Content-Type": "image/png",
+            "Cache-Control": "public, max-age=86400",
+          },
+        });
+      }
+    } catch {
+      // Fall through to static card
     }
   }
 
@@ -147,7 +168,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
       (
         <div
           style={{
-            background: "#0A0A0F",
+            background: "#FAF9F6",
             width: "100%",
             height: "100%",
             display: "flex",
@@ -157,10 +178,10 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             padding: "60px 80px",
           }}
         >
-          <div style={{ fontSize: "40px", fontWeight: 700, color: "#F0F0FF", textAlign: "center" }}>
+          <div style={{ fontSize: "40px", fontWeight: 700, color: "#2C2924", textAlign: "center" }}>
             YouTube channel competitive analysis
           </div>
-          <div style={{ fontSize: "18px", color: "#888", marginTop: "16px" }}>
+          <div style={{ fontSize: "18px", color: "#6B6560", marginTop: "16px" }}>
             Analyzed by Outlier
           </div>
         </div>
@@ -195,7 +216,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
     (
       <div
         style={{
-          background: "linear-gradient(180deg, #0A0A0F 0%, #0D0D18 100%)",
+          background: "linear-gradient(180deg, #FAF9F6 0%, #FFFFFF 100%)",
           width: "100%",
           height: "100%",
           display: "flex",
@@ -213,7 +234,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             left: "50%",
             width: "600px",
             height: "300px",
-            background: "radial-gradient(ellipse at center, rgba(255, 77, 0, 0.06), transparent 70%)",
+            background: "radial-gradient(ellipse at center, rgba(13, 147, 115, 0.06), transparent 70%)",
             display: "flex",
           }}
         />
@@ -242,7 +263,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                   width: "56px",
                   height: "56px",
                   borderRadius: "50%",
-                  background: "#FF4D00",
+                  background: "#0D9373",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -256,11 +277,11 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               </div>
             )}
             <div style={{ display: "flex", flexDirection: "column" }}>
-              <div style={{ fontSize: "22px", fontWeight: 700, color: "#F0F0FF", fontFamily: "DM Sans" }}>
+              <div style={{ fontSize: "22px", fontWeight: 700, color: "#2C2924", fontFamily: "DM Sans" }}>
                 {channelAName}
               </div>
               {subsA != null && (
-                <div style={{ fontSize: "13px", color: "#888", marginTop: "2px" }}>
+                <div style={{ fontSize: "13px", color: "#6B6560", marginTop: "2px" }}>
                   {formatCompact(subsA)} subs
                 </div>
               )}
@@ -280,7 +301,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
               style={{
                 fontSize: "16px",
                 fontWeight: 700,
-                color: "#555",
+                color: "#A8A29E",
                 letterSpacing: "0.2em",
               }}
             >
@@ -291,11 +312,11 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
           {/* Channel B */}
           <div style={{ display: "flex", alignItems: "center", justifyContent: "flex-end", flex: 1 }}>
             <div style={{ display: "flex", flexDirection: "column", alignItems: "flex-end" }}>
-              <div style={{ fontSize: "22px", fontWeight: 700, color: "#F0F0FF", fontFamily: "DM Sans" }}>
+              <div style={{ fontSize: "22px", fontWeight: 700, color: "#2C2924", fontFamily: "DM Sans" }}>
                 {channelBName}
               </div>
               {subsB != null && (
-                <div style={{ fontSize: "13px", color: "#888", marginTop: "2px" }}>
+                <div style={{ fontSize: "13px", color: "#6B6560", marginTop: "2px" }}>
                   {formatCompact(subsB)} subs
                 </div>
               )}
@@ -313,7 +334,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                   width: "56px",
                   height: "56px",
                   borderRadius: "50%",
-                  background: "#FF4D00",
+                  background: "#0D9373",
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "center",
@@ -330,7 +351,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         </div>
 
         {/* Divider */}
-        <div style={{ height: "1px", background: "#1A1A2E", width: "100%", display: "flex" }} />
+        <div style={{ height: "1px", background: "#E0DDD6", width: "100%", display: "flex" }} />
 
         {/* ─── Zone 2: Metric Rows ─── */}
         <div
@@ -357,7 +378,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                     fontSize: "28px",
                     fontWeight: 700,
                     fontFamily: "monospace",
-                    color: row.winnerA ? "#FF4D00" : "#888",
+                    color: row.winnerA ? "#0D9373" : "#6B6560",
                     marginRight: "12px",
                   }}
                 >
@@ -369,7 +390,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                     width: "24px",
                     height: "24px",
                     borderRadius: "50%",
-                    background: row.winnerA ? "#FF4D00" : "#1A1A2E",
+                    background: row.winnerA ? "#0D9373" : "#E0DDD6",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -393,7 +414,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                 <div
                   style={{
                     fontSize: "12px",
-                    color: "#666",
+                    color: "#A8A29E",
                     letterSpacing: "0.12em",
                     fontFamily: "monospace",
                   }}
@@ -410,7 +431,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                     width: "24px",
                     height: "24px",
                     borderRadius: "50%",
-                    background: row.winnerB ? "#FF4D00" : "#1A1A2E",
+                    background: row.winnerB ? "#0D9373" : "#E0DDD6",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
@@ -425,7 +446,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                     fontSize: "28px",
                     fontWeight: 700,
                     fontFamily: "monospace",
-                    color: row.winnerB ? "#FF4D00" : "#888",
+                    color: row.winnerB ? "#0D9373" : "#6B6560",
                     marginLeft: "12px",
                   }}
                 >
@@ -437,7 +458,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
         </div>
 
         {/* Divider */}
-        <div style={{ height: "1px", background: "#1A1A2E", width: "100%", display: "flex" }} />
+        <div style={{ height: "1px", background: "#E0DDD6", width: "100%", display: "flex" }} />
 
         {/* ─── Zone 3: Grades + Watermark ─── */}
         <div
@@ -467,7 +488,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             <div
               style={{
                 fontSize: "11px",
-                color: "#555",
+                color: "#A8A29E",
                 letterSpacing: "0.12em",
               }}
             >
@@ -482,14 +503,14 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
                 width: "6px",
                 height: "6px",
                 borderRadius: "50%",
-                background: "#FF4D00",
+                background: "#0D9373",
                 marginRight: "8px",
               }}
             />
             <div
               style={{
                 fontSize: "12px",
-                color: "#444",
+                color: "#A8A29E",
                 letterSpacing: "0.15em",
               }}
             >
@@ -502,7 +523,7 @@ export default async function OGImage({ params }: { params: Promise<{ slug: stri
             <div
               style={{
                 fontSize: "11px",
-                color: "#555",
+                color: "#A8A29E",
                 letterSpacing: "0.12em",
               }}
             >
