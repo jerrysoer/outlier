@@ -76,6 +76,78 @@ const PRESETS: PresetData[] = [
     channelBName: "Cut",
     teaser: "Social experiments — debate vs dare",
   },
+  // ── New presets (YouTubers) ──────────────────────────
+  {
+    channelA: "@mrbeast",
+    channelB: "@dudeperfect",
+    channelAName: "MrBeast",
+    channelBName: "Dude Perfect",
+    teaser: "Philanthropy stunts vs trick-shot empire",
+  },
+  {
+    channelA: "@nikkietutorials",
+    channelB: "@jackieaina",
+    channelAName: "NikkieTutorials",
+    channelBName: "Jackie Aina",
+    teaser: "Glam powerhouses — precision meets bold energy",
+  },
+  {
+    channelA: "@joshuaweissman",
+    channelB: "@babishculinaryuniverse",
+    channelAName: "Joshua Weissman",
+    channelBName: "Babish",
+    teaser: "Kitchen rivals — technique nerd vs comfort food",
+  },
+  {
+    channelA: "@chloeting",
+    channelB: "@blogilates",
+    channelAName: "Chloe Ting",
+    channelBName: "Blogilates",
+    teaser: "Home workout queens — viral challenges vs Pilates empire",
+  },
+  {
+    channelA: "@kurzgesagt",
+    channelB: "@teded",
+    channelAName: "Kurzgesagt",
+    channelBName: "TED-Ed",
+    teaser: "Animation-first education — indie studio vs institution",
+  },
+  {
+    channelA: "@karaandnate",
+    channelB: "@lostleblanc",
+    channelAName: "Kara and Nate",
+    channelBName: "Lost LeBlanc",
+    teaser: "Full-time travelers — couple vlog vs solo cinematic",
+  },
+  {
+    channelA: "@colinandsamir",
+    channelB: "@mattdavella",
+    channelAName: "Colin and Samir",
+    channelBName: "Matt D'Avella",
+    teaser: "Creator economy duo vs minimalist filmmaker",
+  },
+  // ── New presets (Businesses) ─────────────────────────
+  {
+    channelA: "@redbull",
+    channelB: "@gopro",
+    channelAName: "Red Bull",
+    channelBName: "GoPro",
+    teaser: "Adrenaline marketing — energy drink vs camera lifestyle",
+  },
+  {
+    channelA: "@hubspot",
+    channelB: "@shopify",
+    channelAName: "HubSpot",
+    channelBName: "Shopify",
+    teaser: "SaaS content machines — who wins educational marketing?",
+  },
+  {
+    channelA: "@nike",
+    channelB: "@gymshark",
+    channelAName: "Nike",
+    channelBName: "Gymshark",
+    teaser: "Legacy athletic giant vs DTC disruptor",
+  },
 ];
 
 function pickRandom(arr: PresetData[], count: number): PresetData[] {
