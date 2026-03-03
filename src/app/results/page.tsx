@@ -21,6 +21,7 @@ import ShareButton from "@/components/ShareButton";
 import ChannelAvatar from "@/components/ChannelAvatar";
 import OutlierWatermark from "@/components/OutlierWatermark";
 import { ArrowLeftRight, ExternalLink } from "lucide-react";
+import { swapChannels } from "@/lib/swap";
 import type { AnalysisPhase, ProgressEvent, AnalysisResult } from "@/lib/types";
 
 function youtubeUrl(handle: string, title: string) {
@@ -254,23 +255,14 @@ function ResultsContent() {
       )}
 
       {/* Results Display */}
-      {result && <ResultsDisplay result={result} onTryAnother={handleTryAnother} />}
+      {result && <ResultsDisplay result={result} onTryAnother={handleTryAnother} onFlip={() => setResult(swapChannels(result))} />}
     </main>
   );
 }
 
-function ResultsDisplay({ result, onTryAnother }: { result: AnalysisResult; onTryAnother: () => void }) {
-  const router = useRouter();
+function ResultsDisplay({ result, onTryAnother, onFlip }: { result: AnalysisResult; onTryAnother: () => void; onFlip: () => void }) {
   const channelAName = result.channelA.meta.title;
   const channelBName = result.channelB.meta.title;
-
-  function handleFlip() {
-    const handleA = result.channelA.meta.handle || channelAName;
-    const handleB = result.channelB.meta.handle || channelBName;
-    // Full navigation needed: pushState to /results/[slug] desynchronizes
-    // the Next.js router, and the analysis useEffect has [] deps (mount-only)
-    window.location.href = `/results?a=${encodeURIComponent(handleB)}&b=${encodeURIComponent(handleA)}`;
-  }
 
   return (
     <div className="max-w-4xl mx-auto space-y-8">
@@ -292,7 +284,7 @@ function ResultsDisplay({ result, onTryAnother }: { result: AnalysisResult; onTr
           </span>
         </div>
         <button
-          onClick={handleFlip}
+          onClick={onFlip}
           className="px-1.5 py-1 rounded-md text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-dim)] transition-all"
           title="Swap channels"
         >

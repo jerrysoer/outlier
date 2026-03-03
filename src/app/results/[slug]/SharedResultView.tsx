@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import { useRouter } from "next/navigation";
+import { swapChannels } from "@/lib/swap";
 import GapTable from "@/components/GapTable";
 import CoreFinding from "@/components/CoreFinding";
 import OutlierCallout from "@/components/OutlierCallout";
@@ -32,8 +34,9 @@ interface Props {
 
 export default function SharedResultView({ result }: Props) {
   const router = useRouter();
-  const channelAName = result.channelA.meta.title;
-  const channelBName = result.channelB.meta.title;
+  const [displayResult, setDisplayResult] = useState(result);
+  const channelAName = displayResult.channelA.meta.title;
+  const channelBName = displayResult.channelB.meta.title;
 
   return (
     <main className="min-h-screen px-6 sm:px-10 py-8 sm:py-12">
@@ -57,9 +60,9 @@ export default function SharedResultView({ result }: Props) {
         {/* Channel headers */}
         <div className="flex items-center gap-3 flex-wrap animate-fade-in" style={{ opacity: 0 }}>
           <div className="flex items-center gap-2">
-            <ChannelAvatar src={result.channelA.meta.thumbnailUrl} name={channelAName} />
+            <ChannelAvatar src={displayResult.channelA.meta.thumbnailUrl} name={channelAName} />
             <a
-              href={youtubeUrl(result.channelA.meta.handle, channelAName)}
+              href={youtubeUrl(displayResult.channelA.meta.handle, channelAName)}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-1 text-sm font-medium hover:text-[var(--accent)] transition-colors"
@@ -68,24 +71,20 @@ export default function SharedResultView({ result }: Props) {
               <ExternalLink size={11} className="opacity-0 group-hover:opacity-60 transition-opacity" />
             </a>
             <span className="data-readout text-xs">
-              {result.channelA.meta.subscriberCount.toLocaleString()} subs
+              {displayResult.channelA.meta.subscriberCount.toLocaleString()} subs
             </span>
           </div>
           <button
-            onClick={() => {
-              const handleA = result.channelA.meta.handle || channelAName;
-              const handleB = result.channelB.meta.handle || channelBName;
-              window.location.href = `/results?a=${encodeURIComponent(handleB)}&b=${encodeURIComponent(handleA)}`;
-            }}
+            onClick={() => setDisplayResult(prev => swapChannels(prev))}
             className="px-1.5 py-1 rounded-md text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--accent-dim)] transition-all"
             title="Swap channels"
           >
             <ArrowLeftRight size={14} />
           </button>
           <div className="flex items-center gap-2">
-            <ChannelAvatar src={result.channelB.meta.thumbnailUrl} name={channelBName} />
+            <ChannelAvatar src={displayResult.channelB.meta.thumbnailUrl} name={channelBName} />
             <a
-              href={youtubeUrl(result.channelB.meta.handle, channelBName)}
+              href={youtubeUrl(displayResult.channelB.meta.handle, channelBName)}
               target="_blank"
               rel="noopener noreferrer"
               className="group flex items-center gap-1 text-sm font-medium hover:text-[var(--accent)] transition-colors"
@@ -94,54 +93,54 @@ export default function SharedResultView({ result }: Props) {
               <ExternalLink size={11} className="opacity-0 group-hover:opacity-60 transition-opacity" />
             </a>
             <span className="data-readout text-xs">
-              {result.channelB.meta.subscriberCount.toLocaleString()} subs
+              {displayResult.channelB.meta.subscriberCount.toLocaleString()} subs
             </span>
           </div>
-          {result.slug && (
+          {displayResult.slug && (
             <div className="ml-auto">
-              <ShareButton slug={result.slug} channelAName={channelAName} channelBName={channelBName} />
+              <ShareButton slug={displayResult.slug} channelAName={channelAName} channelBName={channelBName} />
             </div>
           )}
         </div>
 
         {/* Grade + Roast */}
-        <GradesBadge grades={result.viral.grades} channelAName={channelAName} channelBName={channelBName} />
-        <HeadToHeadCard result={result} />
+        <GradesBadge grades={displayResult.viral.grades} channelAName={channelAName} channelBName={channelBName} />
+        <HeadToHeadCard result={displayResult} />
 
         <div className="section-divider" />
 
         {/* Strategic Insights */}
-        <CoreFinding finding={result.coreFinding} structured={result.coreFindingStructured} />
-        <StealThis tactics={result.viral.stealThisStrategy} channelAName={channelAName} />
+        <CoreFinding finding={displayResult.coreFinding} structured={displayResult.coreFindingStructured} />
+        <StealThis tactics={displayResult.viral.stealThisStrategy} channelAName={channelAName} />
 
         <div className="section-divider" />
 
         {/* Thumbnail Analysis */}
-        <GapTable signals={result.signals} channelAName={channelAName} channelBName={channelBName} />
-        <ThumbnailCorrelation correlations={result.thumbnailCorrelation} />
-        <OutlierCallout channelAName={channelAName} channelBName={channelBName} outliersA={result.outlierVideos.channelA} outliersB={result.outlierVideos.channelB} />
+        <GapTable signals={displayResult.signals} channelAName={channelAName} channelBName={channelBName} />
+        <ThumbnailCorrelation correlations={displayResult.thumbnailCorrelation} />
+        <OutlierCallout channelAName={channelAName} channelBName={channelBName} outliersA={displayResult.outlierVideos.channelA} outliersB={displayResult.outlierVideos.channelB} />
 
         <div className="section-divider" />
 
         {/* Content Performance */}
-        <EngagementRate data={result.engagement} channelAName={channelAName} channelBName={channelBName} />
-        <ViewVelocity data={result.viewVelocity} channelAName={channelAName} channelBName={channelBName} />
-        <FormatBreakdown data={result.formatMix} channelAName={channelAName} channelBName={channelBName} />
+        <EngagementRate data={displayResult.engagement} channelAName={channelAName} channelBName={channelBName} />
+        <ViewVelocity data={displayResult.viewVelocity} channelAName={channelAName} channelBName={channelBName} />
+        <FormatBreakdown data={displayResult.formatMix} channelAName={channelAName} channelBName={channelBName} />
 
         <div className="section-divider" />
 
         {/* Content Strategy */}
-        <UploadCadence data={result.uploadCadence} channelAName={channelAName} channelBName={channelBName} />
-        <TitleIntelligence data={result.titleIntelligence} channelAName={channelAName} channelBName={channelBName} />
-        <TagStrategy data={result.tagStrategy} channelAName={channelAName} channelBName={channelBName} />
+        <UploadCadence data={displayResult.uploadCadence} channelAName={channelAName} channelBName={channelBName} />
+        <TitleIntelligence data={displayResult.titleIntelligence} channelAName={channelAName} channelBName={channelBName} />
+        <TagStrategy data={displayResult.tagStrategy} channelAName={channelAName} channelBName={channelBName} />
 
         <div className="section-divider" />
 
         {/* Share + Viral */}
-        <TweetableCallout text={result.viral.tweetableCallout} slug={result.slug} />
-        {result.slug && (
+        <TweetableCallout text={displayResult.viral.tweetableCallout} slug={displayResult.slug} />
+        {displayResult.slug && (
           <div className="flex justify-center">
-            <ShareButton slug={result.slug} channelAName={channelAName} channelBName={channelBName} />
+            <ShareButton slug={displayResult.slug} channelAName={channelAName} channelBName={channelBName} />
           </div>
         )}
         <OutlierWatermark />
