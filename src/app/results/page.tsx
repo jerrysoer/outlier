@@ -77,7 +77,14 @@ function ResultsContent() {
       }
 
       if (!response.ok) {
-        throw new Error(`Server error: ${response.status}`);
+        let errorMessage = `Server error: ${response.status}`;
+        try {
+          const errorData = await response.json();
+          if (errorData.error) errorMessage = errorData.error;
+        } catch {
+          // Not JSON (CDN error page, etc.) — keep generic message
+        }
+        throw new Error(errorMessage);
       }
 
       // Cache hit: server returns JSON instead of SSE stream

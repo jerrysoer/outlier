@@ -184,6 +184,14 @@ export async function POST(request: NextRequest) {
     // Un-record the rate limit hit since we didn't actually run an analysis
     unrecordMemoryHit(ipHash);
     const msg = e instanceof Error ? e.message : "Failed to resolve channels";
+    if (supabase) {
+      void supabase.from("analytics_events").insert({
+        event: "analysis_error",
+        ip_hash: ipHash,
+        properties: { channel_a: channelA, channel_b: channelB,
+                      error_code: 400, error_message: msg, phase: "resolving_channels" },
+      });
+    }
     return new Response(
       JSON.stringify({ error: msg }),
       { status: 400, headers: { "Content-Type": "application/json" } }
@@ -356,6 +364,14 @@ export async function POST(request: NextRequest) {
           } else if (raw.includes("Channel not found")) {
             msg = "We couldn't find that channel. Double-check the URL or handle.";
           }
+          if (supabase) {
+            void supabase.from("analytics_events").insert({
+              event: "analysis_error",
+              ip_hash: ipHash,
+              properties: { channel_a: channelA, channel_b: channelB,
+                            error_code: 0, error_message: raw, phase: "fetching_videos" },
+            });
+          }
           send({ phase: "error", message: msg });
           controller.close();
           return;
@@ -424,6 +440,14 @@ export async function POST(request: NextRequest) {
       } catch (e) {
         const raw = e instanceof Error ? e.message : "An unexpected error occurred";
         console.error("Analysis pipeline error:", e);
+        if (supabase) {
+          void supabase.from("analytics_events").insert({
+            event: "analysis_error",
+            ip_hash: ipHash,
+            properties: { channel_a: channelA, channel_b: channelB,
+                          error_code: 0, error_message: raw, phase: "pipeline" },
+          });
+        }
 
         let message = raw;
         let statusUrl: string | undefined;
