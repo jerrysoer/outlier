@@ -1,8 +1,6 @@
 "use client";
 
-import { useRef, useState } from "react";
-import { Download, Loader2, Check } from "lucide-react";
-import { toPng } from "html-to-image";
+import { Check } from "lucide-react";
 import type { AnalysisResult } from "@/lib/types";
 
 interface Props {
@@ -120,56 +118,23 @@ function deriveMetrics(result: AnalysisResult): MetricRow[] {
 }
 
 export default function HeadToHeadCard({ result }: Props) {
-  const cardRef = useRef<HTMLDivElement>(null);
-  const [downloading, setDownloading] = useState(false);
-
   const channelAName = result.channelA.meta.title;
   const channelBName = result.channelB.meta.title;
   const gradeA = result.viral.grades.channelA;
   const gradeB = result.viral.grades.channelB;
   const metrics = deriveMetrics(result);
 
-  async function handleDownload() {
-    if (!cardRef.current) return;
-    setDownloading(true);
-    try {
-      const dataUrl = await toPng(cardRef.current, {
-        width: 1080,
-        height: 1080,
-        pixelRatio: 1,
-        backgroundColor: "#FAF9F6",
-      });
-      const link = document.createElement("a");
-      link.download = `outlier-h2h-${channelAName.toLowerCase().replace(/\s+/g, "-")}-vs-${channelBName.toLowerCase().replace(/\s+/g, "-")}.png`;
-      link.href = dataUrl;
-      link.click();
-
-      fetch("/api/event", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ event: "h2h_downloaded", properties: { channelA: channelAName, channelB: channelBName } }),
-      }).catch(() => {});
-    } catch {
-      // Download failed silently
-    } finally {
-      setDownloading(false);
-    }
-  }
-
   return (
     <div className="animate-fade-in-up" style={{ opacity: 0, animationDelay: "100ms" }}>
       <div className="label-mono mb-3">Head to Head</div>
 
-      {/* Card — constrained for display, toPng forces 1080×1080 on export */}
-      <div className="max-w-md mx-auto">
+      <div className="max-w-lg mx-auto">
         <div
-          ref={cardRef}
           style={{
-            aspectRatio: "1 / 1",
             background: "linear-gradient(180deg, #FAF9F6 0%, #FFFFFF 100%)",
             border: "2px solid #E0DDD6",
           }}
-          className="relative rounded-xl overflow-hidden flex flex-col px-10 py-8"
+          className="relative rounded-xl flex flex-col px-10 py-8"
         >
           {/* Zone 1: Header — grades as hero + channel names + sub count */}
           <div className="relative z-10 flex items-center justify-between">
@@ -224,7 +189,7 @@ export default function HeadToHeadCard({ result }: Props) {
 
                     {/* Channel A bar row */}
                     <div className="flex items-center gap-2">
-                      <span className="w-16 text-xs text-[#2C2924] truncate font-medium flex-shrink-0">
+                      <span className="w-20 text-xs text-[#2C2924] truncate font-medium flex-shrink-0">
                         {channelAName}
                       </span>
                       <div className="flex-1 h-4 rounded-sm overflow-hidden" style={{ backgroundColor: "#E8E5E0" }}>
@@ -253,7 +218,7 @@ export default function HeadToHeadCard({ result }: Props) {
 
                     {/* Channel B bar row */}
                     <div className="flex items-center gap-2">
-                      <span className="w-16 text-xs text-[#2C2924] truncate font-medium flex-shrink-0">
+                      <span className="w-20 text-xs text-[#2C2924] truncate font-medium flex-shrink-0">
                         {channelBName}
                       </span>
                       <div className="flex-1 h-4 rounded-sm overflow-hidden" style={{ backgroundColor: "#E8E5E0" }}>
@@ -295,20 +260,6 @@ export default function HeadToHeadCard({ result }: Props) {
         </div>
       </div>
 
-      {/* Download button */}
-      <div className="flex justify-center mt-3">
-        <button
-          onClick={handleDownload}
-          disabled={downloading}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg text-xs
-                     text-[var(--text-muted)] hover:text-[var(--text-secondary)]
-                     border border-[var(--border)] hover:border-[var(--border-bright)]
-                     transition-all duration-200 disabled:opacity-50"
-        >
-          {downloading ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
-          Download card (1080×1080)
-        </button>
-      </div>
     </div>
   );
 }
