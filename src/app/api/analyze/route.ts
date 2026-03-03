@@ -426,17 +426,26 @@ export async function POST(request: NextRequest) {
         console.error("Analysis pipeline error:", e);
 
         let message = raw;
-        if (raw.includes("credit balance") || raw.includes("402")) {
+        let statusUrl: string | undefined;
+
+        if (raw.includes("overloaded") || raw.includes("529")) {
+          message = "Claude AI is temporarily overloaded. This usually resolves within a minute.";
+          statusUrl = "https://status.anthropic.com";
+        } else if (raw.includes("credit balance") || raw.includes("402")) {
           message = "Our AI service is temporarily at capacity. Please try again in a few minutes.";
+          statusUrl = "https://status.anthropic.com";
         } else if (raw.includes("rate limit") || raw.includes("429")) {
           message = "Too many requests — please wait a moment and try again.";
         } else if (raw.includes("ANTHROPIC_API_KEY")) {
           message = "Service configuration error. We're working on it.";
         } else if (raw.includes("YOUTUBE_API_KEY")) {
           message = "YouTube API configuration error. We're working on it.";
+        } else if (raw.includes("quota") || raw.includes("YouTube")) {
+          message = "YouTube API is temporarily unavailable. Please try again shortly.";
+          statusUrl = "https://status.cloud.google.com";
         }
 
-        send({ phase: "error", message });
+        send({ phase: "error", message, statusUrl });
       } finally {
         controller.close();
       }

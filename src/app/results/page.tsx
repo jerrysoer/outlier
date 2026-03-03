@@ -46,6 +46,7 @@ function ResultsContent() {
   const [message, setMessage] = useState("");
   const [result, setResult] = useState<AnalysisResult | null>(null);
   const [error, setError] = useState<string | null>(null);
+  const [statusUrl, setStatusUrl] = useState<string | null>(null);
   const [rateLimited, setRateLimited] = useState(false);
 
   const runAnalysis = useCallback(async () => {
@@ -116,6 +117,7 @@ function ResultsContent() {
 
             if (event.phase === "error") {
               setError(event.message);
+              setStatusUrl(event.statusUrl ?? null);
               return;
             }
 
@@ -205,9 +207,19 @@ function ResultsContent() {
           <h2 className="text-xl font-bold mb-2 tracking-tight">
             {rateLimited ? "Daily limit reached" : "Analysis failed"}
           </h2>
-          <p className="text-[14px] text-[var(--text-secondary)] mb-6 max-w-sm mx-auto">
+          <p className={`text-[14px] text-[var(--text-secondary)] max-w-sm mx-auto ${statusUrl ? "mb-2" : "mb-6"}`}>
             {error}
           </p>
+          {statusUrl && (
+            <a
+              href={statusUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-1.5 text-[13px] text-[var(--text-muted)] hover:text-[var(--accent)] transition-colors mb-6"
+            >
+              Check provider status →
+            </a>
+          )}
           <div className="flex gap-3 justify-center">
             {rateLimited ? (
               <button
@@ -220,6 +232,7 @@ function ResultsContent() {
               <button
                 onClick={() => {
                   setError(null);
+                  setStatusUrl(null);
                   setPhase("resolving_channels");
                   setMessage("");
                   runAnalysis();

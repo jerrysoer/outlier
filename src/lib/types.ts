@@ -311,4 +311,5 @@ export interface ProgressEvent {
   message: string;
   data?: AnalysisResult;
   remaining?: number;  // Audits remaining for this IP today
+  statusUrl?: string;  // Link to provider status page on transient errors
 }
