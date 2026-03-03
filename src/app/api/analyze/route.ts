@@ -117,7 +117,7 @@ export async function POST(request: NextRequest) {
     if (supabase) {
       void supabase.from("analytics_events").insert({
         event: "rate_limited",
-        properties: { ip_hash: ipHash, channel_a: channelA, channel_b: channelB },
+        data: { ip_hash: ipHash, channel_a: channelA, channel_b: channelB },
       });
     }
 
@@ -188,7 +188,7 @@ export async function POST(request: NextRequest) {
       void supabase.from("analytics_events").insert({
         event: "analysis_error",
         ip_hash: ipHash,
-        properties: { channel_a: channelA, channel_b: channelB,
+        data: { channel_a: channelA, channel_b: channelB,
                       error_code: 400, error_message: msg, phase: "resolving_channels" },
       });
     }
@@ -280,7 +280,7 @@ export async function POST(request: NextRequest) {
           void supabase.from("analytics_events").insert({
             event: "cache_hit",
             ip_hash: ipHash,
-            properties: {
+            data: {
               channel_a: channelA,
               channel_b: channelB,
               cached_slug: cached.slug,
@@ -308,7 +308,7 @@ export async function POST(request: NextRequest) {
         void supabase.from("analytics_events").insert({
           event: "cache_hit",
           ip_hash: ipHash,
-          properties: {
+          data: {
             channel_a: channelA,
             channel_b: channelB,
             cached_slug: cached.slug,
@@ -368,7 +368,7 @@ export async function POST(request: NextRequest) {
             void supabase.from("analytics_events").insert({
               event: "analysis_error",
               ip_hash: ipHash,
-              properties: { channel_a: channelA, channel_b: channelB,
+              data: { channel_a: channelA, channel_b: channelB,
                             error_code: 0, error_message: raw, phase: "fetching_videos" },
             });
           }
@@ -417,7 +417,7 @@ export async function POST(request: NextRequest) {
             await supabase.from("analytics_events").insert({
               event: "audit_run",
               ip_hash: ipHash,
-              properties: {
+              data: {
                 channel_a: channelA,
                 channel_b: channelB,
                 channel_a_name: channelDataA.meta.title,
@@ -444,7 +444,7 @@ export async function POST(request: NextRequest) {
           void supabase.from("analytics_events").insert({
             event: "analysis_error",
             ip_hash: ipHash,
-            properties: { channel_a: channelA, channel_b: channelB,
+            data: { channel_a: channelA, channel_b: channelB,
                           error_code: 0, error_message: raw, phase: "pipeline" },
           });
         }

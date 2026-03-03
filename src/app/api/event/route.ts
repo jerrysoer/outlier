@@ -22,7 +22,7 @@ export async function POST(request: NextRequest) {
   try {
     await supabase.from("analytics_events").insert({
       event,
-      properties: properties ?? null,
+      data: properties ?? null,
       session_id: sessionId ?? null,
     });
     return NextResponse.json({ ok: true });
