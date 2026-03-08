@@ -34,6 +34,14 @@ export function parseChannelInput(input: string): {
     return { type: "id", value: channelUrlMatch[1] };
   }
 
+  // Legacy custom URL: youtube.com/c/handle, youtube.com/user/handle, or youtube.com/handle
+  const legacyUrlMatch = trimmed.match(
+    /(?:youtube\.com|youtu\.be)\/(?:c\/|user\/)?([a-zA-Z0-9_.-]+)\/?(?:\?.*)?$/
+  );
+  if (legacyUrlMatch) {
+    return { type: "handle", value: legacyUrlMatch[1] };
+  }
+
   // @handle format
   if (trimmed.startsWith("@")) {
     return { type: "handle", value: trimmed.slice(1) };
